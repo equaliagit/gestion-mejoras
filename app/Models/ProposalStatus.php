@@ -51,10 +51,10 @@ class ProposalStatus extends Model
         return $query->where('code', $code);
     }
 
-    /** Id a partir del código, cacheado: se consulta en cada transición. */
+    /** Id a partir del código. Se usa en cada transición. */
     public static function idFor(string $code): int
     {
-        return once(fn () => static::query()->pluck('id', 'code')->all())[$code]
+        return static::query()->where('code', $code)->value('id')
             ?? throw new \InvalidArgumentException("Estado desconocido: {$code}");
     }
 
