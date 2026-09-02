@@ -43,17 +43,6 @@ class CommitteeController extends Controller
                     fn (Proposal $p) => $p->status->hasCode(ProposalStatus::IN_COMMITTEE)
                 )->count(),
             ],
-            'misPropuestas' => Proposal::query()->where('user_id', $request->user()->id)->count(),
-            'iniciales' => $this->iniciales($request->user()->name),
         ]);
-    }
-
-    private function iniciales(string $nombre): string
-    {
-        return collect(explode(' ', $nombre))
-            ->filter()
-            ->take(2)
-            ->map(fn (string $parte) => mb_strtoupper(mb_substr($parte, 0, 1)))
-            ->implode('');
     }
 }

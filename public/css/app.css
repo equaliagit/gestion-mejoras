@@ -292,3 +292,15 @@ details.accion .cuerpo textarea{min-height:70px}
 
 /* Cuando la pelota está en el tejado de quien propuso */
 .pide-accion{color:var(--ochre); font-weight:600}
+
+/* -------------------------------------------------------------- Los avisos */
+.ninfo{display:grid; grid-template-columns:8px 1fr; gap:12px; padding:14px 16px; border-bottom:1px solid var(--line)}
+.ninfo:last-child{border-bottom:0}
+.ninfo .u{width:8px; height:8px; border-radius:50%; background:var(--accent); margin-top:7px}
+.ninfo .u.leido{background:var(--line-strong)}
+.ninfo p{font-size:13px; color:var(--ink-2); margin-top:2px}
+.ninfo time{font-family:"IBM Plex Mono",monospace; font-size:11px; color:var(--ink-3); display:block; margin-top:6px}
+.nav .count.sin-leer{
+  background:var(--accent); color:var(--on-accent); border-radius:99px;
+  padding:1px 7px; font-weight:600; font-size:10.5px;
+}

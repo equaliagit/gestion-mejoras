@@ -48,7 +48,7 @@ class ProposalController extends Controller
                 )->count(),
                 'borradores' => $propuestas->filter(fn (Proposal $p) => $p->isDraft())->count(),
             ],
-        ] + $this->datosDelMenu($request));
+        ]);
     }
 
     /**
@@ -66,7 +66,7 @@ class ProposalController extends Controller
                 ->with(['area', 'status', 'author'])
                 ->latest('submitted_at')
                 ->get(),
-        ] + $this->datosDelMenu($request));
+        ]);
     }
 
     public function create(Request $request): View
@@ -78,7 +78,7 @@ class ProposalController extends Controller
             'impactos' => Impact::active()->get(),
             'prioridades' => Priority::cases(),
             'visibilidades' => Visibility::cases(),
-        ] + $this->datosDelMenu($request));
+        ]);
     }
 
     /**
@@ -106,7 +106,7 @@ class ProposalController extends Controller
             'responsables' => $request->user()->can('implement', $proposal)
                 ? User::query()->where('is_active', true)->orderBy('name')->get()
                 : collect(),
-        ] + $this->datosDelMenu($request));
+        ]);
     }
 
     public function store(StoreProposalRequest $request): RedirectResponse
@@ -125,26 +125,5 @@ class ProposalController extends Controller
         return redirect()
             ->route('proposals.index')
             ->with('exito', "Propuesta enviada con la referencia {$propuesta->reference}. Te avisaremos en cuanto haya novedades.");
-    }
-
-    /**
-     * Lo que necesita el menú lateral en todas las pantallas.
-     * Provisional: cuando haya más pantallas esto pasará a un View Composer,
-     * que es la forma de Laravel de compartir datos con todas las vistas.
-     *
-     * @return array<string, mixed>
-     */
-    private function datosDelMenu(Request $request): array
-    {
-        $nombre = $request->user()->name;
-
-        return [
-            'misPropuestas' => Proposal::query()->where('user_id', $request->user()->id)->count(),
-            'iniciales' => collect(explode(' ', $nombre))
-                ->filter()
-                ->take(2)
-                ->map(fn (string $parte) => mb_strtoupper(mb_substr($parte, 0, 1)))
-                ->implode(''),
-        ];
     }
 }

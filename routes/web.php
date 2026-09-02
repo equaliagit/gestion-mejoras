@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\CommitteeController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProposalActionController;
 use App\Http\Controllers\ProposalController;
 use Illuminate\Support\Facades\Route;
@@ -33,6 +34,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/propuestas', [ProposalController::class, 'index'])->name('proposals.index');
     Route::get('/propuestas/empresa', [ProposalController::class, 'shared'])->name('proposals.shared');
     Route::get('/propuestas/nueva', [ProposalController::class, 'create'])->name('proposals.create');
+
+    Route::get('/avisos', [NotificationController::class, 'index'])->name('notifications.index');
+    Route::post('/avisos/leidos', [NotificationController::class, 'markAllRead'])->name('notifications.read');
     Route::post('/propuestas', [ProposalController::class, 'store'])->name('proposals.store');
 
     // La bandeja del comité. El middleware corta el paso a quien no tenga

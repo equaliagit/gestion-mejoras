@@ -40,6 +40,12 @@
             <a class="nav {{ request()->routeIs('proposals.create') ? 'is-on' : '' }}" href="{{ route('proposals.create') }}">
                 Nueva propuesta
             </a>
+            <a class="nav {{ request()->routeIs('notifications.index') ? 'is-on' : '' }}" href="{{ route('notifications.index') }}">
+                Avisos
+                @if (($avisosSinLeer ?? 0) > 0)
+                    <span class="count sin-leer">{{ $avisosSinLeer }}</span>
+                @endif
+            </a>
         </nav>
 
         @can('proposals.review')
