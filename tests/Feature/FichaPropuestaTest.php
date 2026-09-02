@@ -140,6 +140,32 @@ class FichaPropuestaTest extends TestCase
             ->assertForbidden();
     }
 
+    public function test_quien_propone_lee_la_pregunta_que_le_hacen(): void
+    {
+        $propuesta = $this->enviar($this->marta, Visibility::Public);
+        $propuesta = $this->flujo->assignReviewer($propuesta, $this->luis, $this->luis);
+        $this->flujo->requestInfo($propuesta, $this->luis, '¿Cuántos partes se generan al mes?');
+
+        // La pregunta tiene que estar en el hilo visible, no solo en el
+        // historial: si no, la propuesta se queda parada y nadie sabe por qué.
+        $this->actingAs($this->marta)
+            ->get(route('proposals.show', $propuesta))
+            ->assertOk()
+            ->assertSee('¿Cuántos partes se generan al mes?', escape: false);
+    }
+
+    public function test_el_listado_avisa_a_quien_propone_de_que_le_toca_mover(): void
+    {
+        $propuesta = $this->enviar($this->marta, Visibility::Public);
+        $propuesta = $this->flujo->assignReviewer($propuesta, $this->luis, $this->luis);
+        $this->flujo->requestInfo($propuesta, $this->luis, '¿Cuántos partes se generan al mes?');
+
+        $this->actingAs($this->marta)
+            ->get(route('proposals.index'))
+            ->assertOk()
+            ->assertSee('contesta en la ficha');
+    }
+
     public function test_contestar_una_peticion_de_info_devuelve_la_propuesta_a_revision(): void
     {
         $propuesta = $this->enviar($this->marta, Visibility::Public);

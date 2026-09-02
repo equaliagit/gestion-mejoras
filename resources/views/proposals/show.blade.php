@@ -297,7 +297,10 @@
                             </details>
                         @endif
 
-                        @if ($puedeRevisar && in_array(\App\Models\ProposalStatus::IN_REVIEW, $siguientes, true) && $propuesta->reviewer_id)
+                        {{-- Reabrir solo tiene sentido en lo que se cerró sin hacer:
+                             rechazado o aplazado. Una propuesta esperando información
+                             ya está viva, no hay nada que reabrir. --}}
+                        @if ($puedeRevisar && in_array($propuesta->status->code, [\App\Models\ProposalStatus::REJECTED, \App\Models\ProposalStatus::POSTPONED], true))
                             <details class="accion">
                                 <summary>Reabrir</summary>
                                 <div class="cuerpo">

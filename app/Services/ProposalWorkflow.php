@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Enums\Visibility;
 use App\Events\ProposalStatusChanged;
 use App\Exceptions\InvalidTransition;
+use App\Models\Comment;
 use App\Models\CommitteeSession;
 use App\Models\Proposal;
 use App\Models\ProposalStatus as Status;
@@ -81,14 +82,29 @@ class ProposalWorkflow
         });
     }
 
-    /** Se le pide una aclaración al proponente; la propuesta queda esperando. */
+    /**
+     * Se le pide una aclaración al proponente; la propuesta queda esperando.
+     *
+     * La pregunta se publica en el hilo visible, no solo en el historial: si
+     * quien tiene que contestar no puede leerla, la propuesta se queda parada
+     * para siempre y nadie entiende por qué.
+     */
     public function requestInfo(Proposal $proposal, User $actor, string $question): Proposal
     {
         if (trim($question) === '') {
             throw InvalidTransition::missing('escribir la pregunta al proponente', Status::AWAITING_INFO);
         }
 
-        return $this->moveTo($proposal, Status::AWAITING_INFO, $actor, $question);
+        return DB::transaction(function () use ($proposal, $actor, $question) {
+            Comment::create([
+                'proposal_id' => $proposal->id,
+                'user_id' => $actor->id,
+                'body' => $question,
+                'is_internal' => false,
+            ]);
+
+            return $this->moveTo($proposal, Status::AWAITING_INFO, $actor, $question);
+        });
     }
 
     /** El proponente contesta y vuelve sola a revisión. */

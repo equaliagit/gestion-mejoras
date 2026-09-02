@@ -289,3 +289,6 @@ details.accion .cuerpo textarea{min-height:70px}
 @media (max-width:900px){
   .detail{grid-template-columns:1fr}
 }
+
+/* Cuando la pelota está en el tejado de quien propuso */
+.pide-accion{color:var(--ochre); font-weight:600}

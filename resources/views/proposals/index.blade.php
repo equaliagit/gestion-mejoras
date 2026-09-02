@@ -45,6 +45,8 @@
                     <small>
                         @if ($propuesta->isDraft())
                             Borrador sin enviar
+                        @elseif ($propuesta->status->hasCode(\App\Models\ProposalStatus::AWAITING_INFO))
+                            <span class="pide-accion">Te han preguntado algo · contesta en la ficha</span>
                         @elseif ($propuesta->reviewer)
                             Revisa: {{ $propuesta->reviewer->name }}
                         @else
