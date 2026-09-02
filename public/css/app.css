@@ -8,6 +8,7 @@
   --line:#DCE3DE; --line-strong:#C2CCC6;
   --ink:#131B19; --ink-2:#41504B; --ink-3:#6D7C76;
   --accent:#0E5F52; --accent-2:#0B4A40; --accent-soft:#DCEDE7; --on-accent:#FFFFFF;
+  --c1:#118874; --c2:#B5651A;
   --ochre:#9C580F; --ochre-soft:#F7EAD8;
   --ok:#276F44; --ok-soft:#DCEEE2;
   --warn:#8A6110; --warn-soft:#F6EBD2;
@@ -22,6 +23,7 @@
     --line:#26332E; --line-strong:#3A4A43;
     --ink:#E7EEEA; --ink-2:#AEBDB7; --ink-3:#7C8C86;
     --accent:#54C1A7; --accent-2:#8CE0C9; --accent-soft:#123129; --on-accent:#07201B;
+    --c1:#35A98D; --c2:#C0863C;
     --ochre:#D79B55; --ochre-soft:#31240F;
     --ok:#63B683; --ok-soft:#132A1D;
     --warn:#CFA745; --warn-soft:#2C2410;
@@ -304,3 +306,30 @@ details.accion .cuerpo textarea{min-height:70px}
   background:var(--accent); color:var(--on-accent); border-radius:99px;
   padding:1px 7px; font-weight:600; font-size:10.5px;
 }
+
+/* ------------------------------------------------------------- Los informes */
+.cifras{display:grid; grid-template-columns:repeat(auto-fit,minmax(215px,1fr)); gap:16px; margin-bottom:16px}
+.chartgrid{display:grid; grid-template-columns:1fr 1fr; gap:16px}
+.chartgrid .wide{grid-column:1 / -1}
+.chart svg{width:100%; height:auto; display:block; overflow:visible}
+.chart text{font-family:"IBM Plex Mono",monospace; font-size:9.5px; fill:var(--ink-3)}
+.chart text.val{font-size:10px; fill:var(--ink-2); font-weight:600}
+.chart text.cat{font-family:"IBM Plex Sans",sans-serif; font-size:11px; fill:var(--ink-2)}
+.chart .gridline{stroke:var(--line); stroke-width:1}
+.chart .axisline{stroke:var(--line-strong); stroke-width:1}
+.chart .s1{fill:var(--c1)}
+.chart .s2{fill:var(--c2)}
+.chart rect:hover{opacity:.82}
+.keys{display:flex; flex-wrap:wrap; gap:16px; padding:0 16px 12px; font-size:12px; color:var(--ink-2)}
+.keys span{display:inline-flex; align-items:center; gap:7px}
+.keys i{width:11px; height:11px; border-radius:3px; display:block}
+.keys i.k1{background:var(--c1)}
+.keys i.k2{background:var(--c2)}
+.stat{display:flex; align-items:flex-end; justify-content:space-between; gap:14px; flex-wrap:wrap}
+.stat .big{font-family:"IBM Plex Mono",monospace; font-size:38px; font-weight:600; letter-spacing:-.03em; line-height:1; font-variant-numeric:tabular-nums}
+.stat .unit{font-size:15px; font-weight:500; color:var(--ink-3); margin-left:4px}
+.stat .trend{font-size:12.5px; color:var(--ok); font-weight:600; margin-top:6px}
+.stat .trend.peor{color:var(--bad)}
+.spark{width:132px; flex:none}
+.block-b .hint{font-size:12px; color:var(--ink-3); line-height:1.45}
+@media (max-width:900px){ .chartgrid{grid-template-columns:1fr} }

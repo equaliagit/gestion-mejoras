@@ -6,6 +6,7 @@ use App\Http\Controllers\CommitteeController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProposalActionController;
 use App\Http\Controllers\ProposalController;
+use App\Http\Controllers\ReportController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -38,6 +39,13 @@ Route::middleware('auth')->group(function () {
     Route::get('/avisos', [NotificationController::class, 'index'])->name('notifications.index');
     Route::post('/avisos/leidos', [NotificationController::class, 'markAllRead'])->name('notifications.read');
     Route::post('/propuestas', [ProposalController::class, 'store'])->name('proposals.store');
+
+    // Los informes y la bandeja: cada uno con su permiso. El middleware
+    // corta el paso antes incluso de entrar en el controlador.
+    Route::middleware('can:reports.view')->group(function () {
+        Route::get('/informes', [ReportController::class, 'index'])->name('reports.index');
+        Route::get('/informes/descargar', [ReportController::class, 'export'])->name('reports.export');
+    });
 
     // La bandeja del comité. El middleware corta el paso a quien no tenga
     // el permiso, antes incluso de entrar en el controlador.

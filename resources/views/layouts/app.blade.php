@@ -48,14 +48,21 @@
             </a>
         </nav>
 
-        @can('proposals.review')
+        @if (auth()->user()->canAny(['proposals.review', 'reports.view']))
             <nav class="navgroup" aria-label="Gestión">
                 <p class="eyebrow">Gestión</p>
-                <a class="nav {{ request()->routeIs('committee.inbox') ? 'is-on' : '' }}" href="{{ route('committee.inbox') }}">
-                    Bandeja del comité
-                </a>
+                @can('proposals.review')
+                    <a class="nav {{ request()->routeIs('committee.inbox') ? 'is-on' : '' }}" href="{{ route('committee.inbox') }}">
+                        Bandeja del comité
+                    </a>
+                @endcan
+                @can('reports.view')
+                    <a class="nav {{ request()->routeIs('reports.*') ? 'is-on' : '' }}" href="{{ route('reports.index') }}">
+                        Informes
+                    </a>
+                @endcan
             </nav>
-        @endcan
+        @endif
 
         <div class="who">
             <span class="avatar">{{ $iniciales ?? '' }}</span>
