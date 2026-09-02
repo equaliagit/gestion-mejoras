@@ -1,0 +1,390 @@
+<title>Laravel para quien viene de Java</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Serif:wght@500;600&display=swap">
+<style>
+:root{
+  --paper:#F1F4F1; --surface:#FFFFFF; --surface-2:#F8FAF8; --surface-3:#EDF1EE;
+  --line:#DCE3DE; --line-strong:#C2CCC6;
+  --ink:#131B19; --ink-2:#41504B; --ink-3:#6D7C76;
+  --accent:#0E5F52; --accent-2:#0B4A40; --accent-soft:#DCEDE7;
+  --ochre:#9C580F; --ochre-soft:#F7EAD8;
+  --java:#8A6110; --php:#0E5F52;
+  --radius:10px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#0C1211; --surface:#141C1A; --surface-2:#19231F; --surface-3:#1F2B27;
+    --line:#26332E; --line-strong:#3A4A43;
+    --ink:#E7EEEA; --ink-2:#AEBDB7; --ink-3:#7C8C86;
+    --accent:#54C1A7; --accent-2:#8CE0C9; --accent-soft:#123129;
+    --ochre:#D79B55; --ochre-soft:#31240F;
+    --java:#CFA745; --php:#54C1A7;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0C1211; --surface:#141C1A; --surface-2:#19231F; --surface-3:#1F2B27;
+  --line:#26332E; --line-strong:#3A4A43;
+  --ink:#E7EEEA; --ink-2:#AEBDB7; --ink-3:#7C8C86;
+  --accent:#54C1A7; --accent-2:#8CE0C9; --accent-soft:#123129;
+  --ochre:#D79B55; --ochre-soft:#31240F;
+  --java:#CFA745; --php:#54C1A7;
+}
+
+*{box-sizing:border-box}
+body{margin:0; background:var(--paper); color:var(--ink); font-family:"IBM Plex Sans","Segoe UI",system-ui,sans-serif; font-size:16px; line-height:1.62; -webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{margin:0; text-wrap:balance; line-height:1.22}
+p{margin:0}
+:focus-visible{outline:2px solid var(--accent); outline-offset:2px; border-radius:4px}
+.wrap{max-width:880px; margin:0 auto; padding:0 24px}
+.eyebrow{font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:11.5px; font-weight:500; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-3)}
+
+header.doc{padding:54px 0 30px; border-bottom:1px solid var(--line)}
+header.doc h1{font-family:"IBM Plex Serif",Georgia,serif; font-weight:600; font-size:clamp(32px,5vw,48px); letter-spacing:-.015em; margin:14px 0 12px}
+header.doc .lede{color:var(--ink-2); font-size:17px; max-width:62ch}
+
+section{padding:44px 0; border-bottom:1px solid var(--line)}
+section:last-of-type{border-bottom:0}
+.sec-head{margin-bottom:20px; max-width:70ch}
+.sec-head h2{font-family:"IBM Plex Serif",Georgia,serif; font-weight:600; font-size:clamp(22px,3vw,29px); letter-spacing:-.01em; margin:8px 0 10px}
+.body{max-width:70ch; display:grid; gap:14px}
+.body p{color:var(--ink-2)}
+.body strong{color:var(--ink)}
+h3.sub{font-size:17px; font-weight:600; margin:26px 0 10px; max-width:70ch}
+h3.sub:first-of-type{margin-top:8px}
+
+.tbl{border:1px solid var(--line); border-radius:var(--radius); overflow-x:auto; background:var(--surface); margin-top:16px}
+table{width:100%; border-collapse:collapse; font-size:14px; min-width:560px}
+caption{text-align:left; padding:12px 15px; background:var(--surface-2); border-bottom:1px solid var(--line); font-size:13px; font-weight:600; color:var(--accent)}
+thead th{text-align:left; font-family:"IBM Plex Mono",monospace; font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-3); font-weight:500; padding:9px 15px; border-bottom:1px solid var(--line); white-space:nowrap}
+tbody td{padding:9px 15px; border-bottom:1px solid var(--line); vertical-align:top; color:var(--ink-2)}
+tbody tr:last-child td{border-bottom:0}
+.j{font-family:"IBM Plex Mono",monospace; font-size:12.5px; color:var(--java); white-space:nowrap}
+.p{font-family:"IBM Plex Mono",monospace; font-size:12.5px; color:var(--php); white-space:nowrap}
+
+code{font-family:"IBM Plex Mono",monospace; font-size:.87em; background:var(--surface-3); padding:1px 5px; border-radius:4px; color:var(--ink)}
+pre{background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius); padding:14px 16px; overflow-x:auto; margin:14px 0 0; font-size:13px; line-height:1.6}
+pre code{background:none; padding:0; font-size:13px}
+.cmt{color:var(--ink-3)}
+.kw{color:var(--accent); font-weight:600}
+
+.tree{white-space:pre; font-family:"IBM Plex Mono",monospace; font-size:13px; line-height:1.85; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius); padding:16px 18px; overflow-x:auto; margin-top:16px}
+.tree b{color:var(--accent); font-weight:600}
+.tree i{font-style:normal; color:var(--ink-3)}
+
+.note{border-left:3px solid var(--accent); background:var(--surface-2); border-radius:0 var(--radius) var(--radius) 0; padding:14px 16px; display:grid; gap:8px; margin-top:18px; max-width:74ch}
+.note b{color:var(--ink)}
+.note p{font-size:14.5px; color:var(--ink-2)}
+.note.warn{border-left-color:var(--ochre)}
+
+figure{margin:22px 0 0; display:grid; gap:12px}
+figure svg{max-width:100%; height:auto; display:block; color:var(--ink-2)}
+figcaption{font-size:13.5px; color:var(--ink-3); max-width:70ch}
+.dgm-box{fill:var(--surface); stroke:var(--line-strong); stroke-width:1.2}
+.dgm-key{fill:var(--accent-soft); stroke:var(--accent); stroke-width:1.6}
+.dgm-t{font-family:"IBM Plex Mono",monospace; font-size:11.5px; fill:var(--ink); font-weight:600}
+.dgm-s{font-family:"IBM Plex Sans",sans-serif; font-size:10px; fill:var(--ink-3)}
+.dgm-l{font-family:"IBM Plex Sans",sans-serif; font-size:10px; fill:var(--ink-3)}
+.dgm-line{stroke:var(--line-strong); stroke-width:1.3; fill:none}
+
+ul.plain{margin:14px 0 0; padding:0; list-style:none; display:grid; gap:11px; max-width:72ch}
+ul.plain li{display:grid; grid-template-columns:auto 1fr; gap:12px; font-size:15px; color:var(--ink-2)}
+ul.plain li .k{font-family:"IBM Plex Mono",monospace; font-size:11px; color:var(--accent); padding-top:4px; white-space:nowrap}
+ul.plain b{color:var(--ink)}
+
+footer{padding:26px 0 56px; color:var(--ink-3); font-size:13px}
+@media (max-width:600px){ .wrap{padding:0 16px} section{padding:32px 0} }
+</style>
+
+<header class="doc">
+  <div class="wrap">
+    <p class="eyebrow">Buzón de Mejora · Guía interna</p>
+    <h1>Laravel para quien viene de Java</h1>
+    <p class="lede">Qué es cada carpeta del proyecto, qué hace cada archivo que hemos escrito y en qué se parece —y en qué no— a lo que ya sabes. Escrito para leerse de arriba abajo una vez y volver a él a trozos.</p>
+  </div>
+</header>
+
+<main>
+
+<section class="wrap">
+  <div class="sec-head">
+    <p class="eyebrow">Lo primero</p>
+    <h2>La idea general</h2>
+  </div>
+  <div class="body">
+    <p>Laravel es a PHP lo que <strong>Spring Boot</strong> es a Java: un armazón que ya trae resueltos el enrutado, el acceso a base de datos, la seguridad, los correos y las tareas programadas, para que tú escribas solo lo tuyo. Si has tocado Spring, el 70% de los conceptos ya los tienes; cambian los nombres.</p>
+    <p>La diferencia grande, y conviene entenderla desde el principio: <strong>PHP no se compila</strong>. No hay un <code>.jar</code> ni un <code>.war</code> que generar y desplegar. Guardas el archivo, recargas el navegador y ya está corriendo el código nuevo. Eso hace el día a día muy ágil, y también explica por qué desplegar es simplemente copiar archivos al servidor.</p>
+    <p>La segunda diferencia: <strong>cada petición web empieza de cero</strong>. En Java tienes un proceso vivo con su memoria y sus beans en marcha entre peticiones. En PHP, cada vez que alguien pulsa un enlace se arranca la aplicación, se responde y se apaga. Por eso todo lo que tiene que persistir vive en la base de datos o en la sesión, nunca en una variable estática.</p>
+  </div>
+</section>
+
+<section class="wrap">
+  <div class="sec-head">
+    <p class="eyebrow">Equivalencias</p>
+    <h2>Traducción rápida</h2>
+    <p>La tabla que yo tendría abierta al lado la primera semana.</p>
+  </div>
+
+  <div class="tbl">
+    <table>
+      <thead><tr><th>En Java</th><th>Aquí</th><th>Comentario</th></tr></thead>
+      <tbody>
+        <tr><td class="j">Maven / Gradle</td><td class="p">Composer</td><td>Gestor de dependencias. <code>composer require</code> ≈ añadir una dependencia al pom.</td></tr>
+        <tr><td class="j">pom.xml</td><td class="p">composer.json</td><td>Y <code>composer.lock</code> ≈ el lockfile de versiones exactas.</td></tr>
+        <tr><td class="j">~/.m2/repository</td><td class="p">vendor/</td><td>Aquí las librerías se descargan <em>dentro</em> del proyecto. Por eso no se sube al repositorio.</td></tr>
+        <tr><td class="j">@Entity de JPA</td><td class="p">Modelo Eloquent</td><td>Pero sin mapeo declarado: adivina la tabla por el nombre de la clase.</td></tr>
+        <tr><td class="j">Repository / DAO</td><td class="p">El propio modelo</td><td><code>Proposal::where(...)->get()</code>. No hay capa de repositorio salvo que la quieras.</td></tr>
+        <tr><td class="j">Flyway / Liquibase</td><td class="p">Migraciones</td><td>Mismo concepto exacto: versiones de la base de datos en archivos.</td></tr>
+        <tr><td class="j">application.properties</td><td class="p">.env + config/</td><td><code>.env</code> lo que cambia por máquina; <code>config/</code> lo que no.</td></tr>
+        <tr><td class="j">Spring Security</td><td class="p">Policies + permisos</td><td>Nuestro <code>ProposalPolicy</code> ≈ un <code>@PreAuthorize</code> por acción.</td></tr>
+        <tr><td class="j">Controller</td><td class="p">Controller</td><td>Igual. Recibe la petición, decide, devuelve respuesta.</td></tr>
+        <tr><td class="j">Thymeleaf / JSP</td><td class="p">Blade</td><td>Plantillas HTML con huecos. Archivos <code>.blade.php</code>.</td></tr>
+        <tr><td class="j">JUnit</td><td class="p">PHPUnit</td><td>Casi idéntico: clase de test, métodos <code>test_*</code>, aserciones.</td></tr>
+        <tr><td class="j">@Autowired</td><td class="p">Inyección por constructor</td><td>Hay contenedor de dependencias y funciona solo, sin anotación.</td></tr>
+        <tr><td class="j">import</td><td class="p">use</td><td>Misma función. Y <code>namespace</code> ≈ <code>package</code>.</td></tr>
+        <tr><td class="j">mvn spring-boot:run</td><td class="p">php artisan serve</td><td><code>artisan</code> es la navaja suiza del proyecto.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="wrap">
+  <div class="sec-head">
+    <p class="eyebrow">Sintaxis</p>
+    <h2>Seis cosas de PHP que chocan al principio</h2>
+  </div>
+
+  <ul class="plain">
+    <li><span class="k">01</span><span><b>Las variables llevan <code>$</code>.</b> <code>$user</code>, <code>$proposal</code>. Siempre, también los parámetros. Los nombres de clases y funciones no lo llevan.</span></li>
+    <li><span class="k">02</span><span><b>La flecha en vez del punto.</b> Donde en Java escribes <code>user.getName()</code>, aquí es <code>$user-&gt;name</code>. Y para lo estático, dos puntos dobles: <code>Proposal::count()</code> es como <code>Proposal.count()</code>.</span></li>
+    <li><span class="k">03</span><span><b>El punto concatena texto.</b> <code>'Hola '.$nombre</code> es lo que en Java sería <code>"Hola " + nombre</code>. El <code>+</code> aquí solo suma números.</span></li>
+    <li><span class="k">04</span><span><b>Un array es las dos cosas.</b> Sirve de <code>List</code> y de <code>Map</code> a la vez: <code>['a', 'b']</code> o <code>['clave' =&gt; 'valor']</code>. Es la estructura que se usa para casi todo.</span></li>
+    <li><span class="k">05</span><span><b>El tipado es opcional, pero lo usamos.</b> PHP te deja no declarar tipos; en este proyecto los declaramos siempre (<code>public function view(User $user): bool</code>). Cuesta lo mismo y el editor te ayuda mucho más.</span></li>
+    <li><span class="k">06</span><span><b><code>?-&gt;</code> evita el <code>NullPointerException</code>.</b> <code>$proposal-&gt;status?-&gt;hasCode(...)</code> devuelve <code>null</code> en vez de reventar si <code>status</code> está vacío. Es el <code>Optional</code> del pobre, pero muy cómodo.</span></li>
+  </ul>
+
+  <div class="note">
+    <p><b>Sobre las clases sin <code>new</code>.</b> Verás cosas como <code>Proposal::where('area_id', 3)-&gt;get()</code> sin instanciar nada. Es azúcar de Laravel: la llamada estática crea por dentro un constructor de consultas y te lo devuelve. Piensa en ello como el <code>CriteriaBuilder</code> de JPA, pero legible.</p>
+  </div>
+</section>
+
+<section class="wrap">
+  <div class="sec-head">
+    <p class="eyebrow">El proyecto</p>
+    <h2>Qué hay en cada carpeta</h2>
+  </div>
+
+  <div class="tree">
+<b>app/</b> <i>— tu código. Lo único que escribirás casi siempre</i>
+  <b>Models/</b> <i>las entidades: Proposal, User, Comment…</i>
+  <b>Enums/</b> <i>los conjuntos cerrados: Visibility, Priority</i>
+  <b>Policies/</b> <i>quién puede hacer qué</i>
+  <b>Support/</b> <i>clases de apoyo nuestras (Permissions)</i>
+  <b>Http/</b> <i>controladores. Todavía vacío</i>
+<b>bootstrap/</b> <i>— el arranque. No se toca</i>
+<b>config/</b> <i>— configuración que no cambia entre máquinas</i>
+<b>database/</b>
+  <b>migrations/</b> <i>el historial de la base de datos</i>
+  <b>seeders/</b> <i>datos iniciales (áreas, estados, roles)</i>
+<b>public/</b> <i>— LA ÚNICA carpeta que ve internet. Aquí apunta el dominio</i>
+<b>resources/views/</b> <i>— las plantillas Blade. Aún vacío</i>
+<b>routes/web.php</b> <i>— qué URL lleva a qué código</i>
+<b>storage/</b> <i>— logs, caché, archivos subidos. Se escribe sola</i>
+<b>tests/</b> <i>— las pruebas</i>
+<b>vendor/</b> <i>— las librerías. NO se toca y NO se sube al repositorio</i>
+<b>.env</b> <i>— contraseñas y ajustes de ESTA máquina. NUNCA se sube</i>
+<b>artisan</b> <i>— el comando de consola del proyecto</i>
+  </div>
+
+  <div class="note warn">
+    <p><b>La carpeta <code>public/</code> es la clave de seguridad del despliegue.</b> Es la única que queda expuesta a internet; todo lo demás —tu código, el <code>.env</code> con las contraseñas, las librerías— queda por encima y es inalcanzable desde el navegador. Por eso insistí tanto en que Plesk pudiera apuntar el dominio ahí dentro y no a la raíz del proyecto.</p>
+  </div>
+</section>
+
+<section class="wrap">
+  <div class="sec-head">
+    <p class="eyebrow">El recorrido</p>
+    <h2>Qué pasa cuando alguien abre una página</h2>
+  </div>
+
+  <figure>
+    <svg viewBox="0 0 740 250" role="img" aria-label="Recorrido de una petición: navegador, public/index.php, routes/web.php, controlador, política y filtro de visibilidad, modelo, base de datos y plantilla Blade">
+      <defs>
+        <marker id="fl" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M 0 1 L 9 5 L 0 9 z" fill="currentColor"></path>
+        </marker>
+      </defs>
+
+      <line class="dgm-line" x1="132" y1="42" x2="196" y2="42" marker-end="url(#fl)"></line>
+      <line class="dgm-line" x1="330" y1="42" x2="394" y2="42" marker-end="url(#fl)"></line>
+      <line class="dgm-line" x1="528" y1="42" x2="592" y2="42" marker-end="url(#fl)"></line>
+      <line class="dgm-line" x1="660" y1="70" x2="660" y2="112" marker-end="url(#fl)"></line>
+      <line class="dgm-line" x1="592" y1="136" x2="528" y2="136" marker-end="url(#fl)"></line>
+      <line class="dgm-line" x1="330" y1="136" x2="266" y2="136" marker-end="url(#fl)"></line>
+      <line class="dgm-line" x1="132" y1="136" x2="70" y2="136"></line>
+      <line class="dgm-line" x1="70" y1="136" x2="70" y2="70" marker-end="url(#fl)"></line>
+
+      <rect class="dgm-box" x="14" y="20" width="118" height="44" rx="7"></rect>
+      <text class="dgm-t" x="73" y="40" text-anchor="middle">navegador</text>
+      <text class="dgm-s" x="73" y="54" text-anchor="middle">alguien pulsa</text>
+
+      <rect class="dgm-box" x="198" y="20" width="132" height="44" rx="7"></rect>
+      <text class="dgm-t" x="264" y="40" text-anchor="middle">public/index.php</text>
+      <text class="dgm-s" x="264" y="54" text-anchor="middle">arranca todo</text>
+
+      <rect class="dgm-box" x="396" y="20" width="132" height="44" rx="7"></rect>
+      <text class="dgm-t" x="462" y="40" text-anchor="middle">routes/web.php</text>
+      <text class="dgm-s" x="462" y="54" text-anchor="middle">qué URL es esta</text>
+
+      <rect class="dgm-box" x="594" y="20" width="132" height="44" rx="7"></rect>
+      <text class="dgm-t" x="660" y="40" text-anchor="middle">Controller</text>
+      <text class="dgm-s" x="660" y="54" text-anchor="middle">decide qué hacer</text>
+
+      <rect class="dgm-key" x="594" y="114" width="132" height="46" rx="7"></rect>
+      <text class="dgm-t" x="660" y="134" text-anchor="middle">Policy + Scope</text>
+      <text class="dgm-s" x="660" y="149" text-anchor="middle">¿puede ver esto?</text>
+
+      <rect class="dgm-box" x="396" y="114" width="132" height="46" rx="7"></rect>
+      <text class="dgm-t" x="462" y="134" text-anchor="middle">Modelo</text>
+      <text class="dgm-s" x="462" y="149" text-anchor="middle">Proposal, User…</text>
+
+      <rect class="dgm-box" x="198" y="114" width="132" height="46" rx="7"></rect>
+      <text class="dgm-t" x="264" y="134" text-anchor="middle">MySQL</text>
+      <text class="dgm-s" x="264" y="149" text-anchor="middle">las tablas</text>
+
+      <rect class="dgm-box" x="14" y="114" width="118" height="46" rx="7"></rect>
+      <text class="dgm-t" x="73" y="134" text-anchor="middle">Blade</text>
+      <text class="dgm-s" x="73" y="149" text-anchor="middle">arma el HTML</text>
+
+      <text class="dgm-l" x="164" y="36" text-anchor="middle">GET</text>
+      <text class="dgm-l" x="736" y="96" text-anchor="end">consulta</text>
+      <text class="dgm-l" x="560" y="128" text-anchor="middle">filtra</text>
+      <text class="dgm-l" x="298" y="128" text-anchor="middle">SQL</text>
+      <text class="dgm-l" x="90" y="200">respuesta al navegador</text>
+      <line class="dgm-line" x1="14" y1="186" x2="14" y2="186"></line>
+    </svg>
+    <figcaption>La caja destacada es donde entran las dos piezas que escribimos hoy. Fíjate en que están <strong>en el camino</strong>, no a un lado: no hay forma de llegar a los datos sin pasar por ellas.</figcaption>
+  </figure>
+</section>
+
+<section class="wrap">
+  <div class="sec-head">
+    <p class="eyebrow">El código de hoy</p>
+    <h2>Archivo por archivo</h2>
+  </div>
+
+  <h3 class="sub">Las migraciones — <code>database/migrations/</code></h3>
+  <div class="body">
+    <p>Son <strong>Flyway, exactamente</strong>. Cada archivo describe un cambio en la base de datos, se ejecutan en orden por su fecha en el nombre, y Laravel apunta en una tabla cuáles ya pasó para no repetirlas.</p>
+    <p>Un detalle que en Java no existe: cada migración tiene <code>up()</code> y <code>down()</code>. La primera aplica el cambio, la segunda lo deshace. Sirve para poder retroceder si algo sale mal.</p>
+  </div>
+  <pre><code><span class="kw">Schema</span>::create('areas', <span class="kw">function</span> (Blueprint $table) {
+    $table-&gt;id();                              <span class="cmt">// clave primaria autonumérica</span>
+    $table-&gt;string('name', 80);                <span class="cmt">// VARCHAR(80) NOT NULL</span>
+    $table-&gt;boolean('is_active')-&gt;default(<span class="kw">true</span>);
+    $table-&gt;timestamps();                      <span class="cmt">// created_at y updated_at</span>
+});</code></pre>
+  <div class="body">
+    <p>Eso genera el <code>CREATE TABLE</code> por ti, con la sintaxis correcta para MySQL o para SQLite, que es justo por lo que las pruebas pueden correr contra una base de datos en memoria mientras la aplicación de verdad usa MySQL.</p>
+  </div>
+
+  <h3 class="sub">Los modelos — <code>app/Models/</code></h3>
+  <div class="body">
+    <p>Equivalen a las <code>@Entity</code>, pero <strong>no declaran el mapeo</strong>. La clase <code>Proposal</code> sabe que su tabla es <code>proposals</code> porque Laravel pluraliza el nombre, y sabe que <code>title</code> es una columna porque la lee de la tabla. No hay que escribir un campo por cada columna.</p>
+    <p>Lo que sí escribimos es lo que la convención no puede adivinar:</p>
+  </div>
+  <ul class="plain">
+    <li><span class="k">$fillable</span><span><b>Qué campos se pueden rellenar de golpe desde un formulario.</b> Es una defensa: si alguien manipula el formulario y envía <code>status_id</code>, se ignora, porque no está en la lista. Por eso las pruebas fallaron al principio y tuve que usar <code>forceFill</code> — el propio mecanismo funcionando.</span></li>
+    <li><span class="k">casts()</span><span><b>Cómo convertir cada columna al salir de la base de datos.</b> <code>'decided_at' =&gt; 'date'</code> hace que ese campo llegue como objeto fecha y no como texto. Es el <code>@Temporal</code> de JPA.</span></li>
+    <li><span class="k">Relaciones</span><span><b>Los <code>@ManyToOne</code> y compañía.</b> <code>belongsTo</code> es «yo tengo la clave ajena», <code>hasMany</code> es «los otros tienen la mía», <code>belongsToMany</code> es tabla intermedia. Luego escribes <code>$proposal-&gt;area-&gt;name</code> y la consulta se hace sola.</span></li>
+    <li><span class="k">scope*</span><span><b>Consultas con nombre.</b> <code>scopeOpen()</code> se usa como <code>Proposal::open()-&gt;get()</code>. Son los <code>@Query</code> de Spring Data, pero encadenables entre sí.</span></li>
+  </ul>
+
+  <h3 class="sub">Los enumerados — <code>app/Enums/</code></h3>
+  <div class="body">
+    <p><code>Visibility</code> y <code>Priority</code> son <code>enum</code> de verdad, casi idénticos a los de Java: valores cerrados con métodos dentro. La ventaja frente a andar comparando textos sueltos es que el editor te autocompleta y un error de escritura no compila.</p>
+  </div>
+  <pre><code>$proposal-&gt;visibility === Visibility::Anonymous   <span class="cmt">// comparación segura</span>
+$proposal-&gt;visibility-&gt;label()                    <span class="cmt">// «Anónima», para pintar</span></code></pre>
+  <div class="body">
+    <p>Y como el modelo lo declara en <code>casts()</code>, la conversión entre el texto <code>'anonymous'</code> que hay en MySQL y el enumerado la hace Laravel sola en los dos sentidos.</p>
+  </div>
+
+  <h3 class="sub">El filtro de visibilidad — <code>app/Models/Scopes/VisibilityScope.php</code></h3>
+  <div class="body">
+    <p><strong>Esta es la pieza más importante del día</strong>, y no tiene equivalente directo cómodo en Java. Es un trozo de <code>WHERE</code> que Laravel <em>añade automáticamente</em> a toda consulta que se haga sobre propuestas, en cualquier parte de la aplicación, ahora y dentro de dos años.</p>
+    <p>Se engancha con una sola línea encima de la clase del modelo:</p>
+  </div>
+  <pre><code>#[ScopedBy([VisibilityScope::<span class="kw">class</span>])]
+<span class="kw">class</span> Proposal <span class="kw">extends</span> Model</code></pre>
+  <div class="body">
+    <p>Eso de <code>#[...]</code> es una <strong>anotación</strong>, igual que las de Java, solo que en PHP se llaman atributos y se escriben con almohadilla y corchetes.</p>
+    <p>El efecto práctico: si dentro de seis meses alguien escribe una pantalla nueva y se olvida por completo de comprobar permisos, <strong>la pantalla igualmente no enseñará propuestas privadas</strong>, porque el filtro ya está puesto por debajo. La seguridad no depende de que nadie se despiste. Para saltárselo hay que escribirlo a propósito y bien visible:</p>
+  </div>
+  <pre><code>Proposal::withoutGlobalScope(VisibilityScope::<span class="kw">class</span>)  <span class="cmt">// solo informes y tareas</span></code></pre>
+
+  <h3 class="sub">La política — <code>app/Policies/ProposalPolicy.php</code></h3>
+  <div class="body">
+    <p>Si el filtro decide <strong>qué propuestas aparecen</strong>, la política decide <strong>qué se puede hacer</strong> con una que ya tienes delante. Son las dos caras y hacen falta las dos: sin política, alguien podría adivinar la URL de una propuesta concreta.</p>
+    <p>Cada método responde sí o no a una acción, y Laravel los encuentra solo por el nombre de la clase (<code>Proposal</code> → <code>ProposalPolicy</code>). Se usa así:</p>
+  </div>
+  <pre><code>$user-&gt;can('decide', $proposal)   <span class="cmt">// ¿puede aprobar o rechazar esta?</span></code></pre>
+  <div class="body">
+    <p>Que es, en la práctica, un <code>@PreAuthorize</code> de Spring Security pero escrito en PHP normal y corriente, sin lenguaje de expresiones raro dentro de una cadena de texto.</p>
+  </div>
+
+  <h3 class="sub">Los permisos — <code>app/Support/Permissions.php</code></h3>
+  <div class="body">
+    <p>Una clase con diez constantes y un método que dice qué permisos tiene cada rol. No es de Laravel, la escribí yo, y existe por una razón concreta: <strong>que los permisos estén escritos una sola vez en todo el proyecto</strong>. El seeder los crea leyendo de aquí y el código los comprueba leyendo de aquí, así que no puede haber discrepancias entre lo que la base de datos cree y lo que el código cree.</p>
+  </div>
+
+  <h3 class="sub">Los seeders — <code>database/seeders/</code></h3>
+  <div class="body">
+    <p>Rellenan la base de datos con los datos que la aplicación necesita para funcionar: las áreas, los estados, los roles. No son datos de prueba, son <strong>datos de arranque</strong>, y por eso están escritos para poder ejecutarse mil veces sin duplicar nada (<code>updateOrInsert</code>, <code>findOrCreate</code>). En el servidor se lanzarán una vez el día del despliegue.</p>
+  </div>
+
+  <h3 class="sub">Las pruebas — <code>tests/Feature/</code></h3>
+  <div class="body">
+    <p>PHPUnit, hermano directo de JUnit: una clase, métodos que empiezan por <code>test_</code>, aserciones dentro. Dos diferencias con lo que conoces:</p>
+    <p>La primera, <code>use RefreshDatabase;</code> hace que <strong>cada prueba arranque con una base de datos limpia y recién migrada</strong>, en memoria, y se tire al terminar. No hay que preparar nada ni limpiar después.</p>
+    <p>La segunda, <code>$this-&gt;actingAs($usuario)</code> simula que esa persona ha iniciado sesión. Eso es lo que hace que las pruebas de visibilidad sean de verdad: no comprobamos el filtro por dentro, comprobamos que <em>un empleado concreto contando propuestas</em> obtiene el número correcto.</p>
+  </div>
+
+  <div class="note">
+    <p><b>Por qué escribí pruebas precisamente de esto.</b> Un fallo de visibilidad no se ve: la aplicación funciona igual de bien enseñando una propuesta privada de más. No hay pantalla roja ni excepción. La única forma de enterarse es que alguien lo descubra, y para entonces ya ha pasado. Doce pruebas automáticas son el único aviso que vamos a tener, y se ejecutan enteras en segundo y medio con <code>php artisan test</code>.</p>
+  </div>
+</section>
+
+<section class="wrap">
+  <div class="sec-head">
+    <p class="eyebrow">Chuleta</p>
+    <h2>Comandos del día a día</h2>
+  </div>
+
+  <div class="tbl">
+    <table>
+      <thead><tr><th>Comando</th><th>Qué hace</th></tr></thead>
+      <tbody>
+        <tr><td class="p">php artisan serve</td><td>Levanta la aplicación en <code>localhost:8000</code>. Ctrl+C para pararla.</td></tr>
+        <tr><td class="p">php artisan test</td><td>Ejecuta todas las pruebas.</td></tr>
+        <tr><td class="p">php artisan migrate</td><td>Aplica las migraciones que falten.</td></tr>
+        <tr><td class="p">php artisan migrate:fresh --seed</td><td><strong>Borra todo</strong> y reconstruye la base de datos desde cero. En local, cuando algo se ensucia.</td></tr>
+        <tr><td class="p">php artisan db:seed</td><td>Vuelve a sembrar catálogos y roles.</td></tr>
+        <tr><td class="p">php artisan tinker</td><td>Consola interactiva contra la aplicación viva. Como el <code>jshell</code>, pero con acceso a todos tus modelos.</td></tr>
+        <tr><td class="p">php artisan route:list</td><td>Todas las URL que responde la aplicación.</td></tr>
+        <tr><td class="p">vendor/bin/pint</td><td>Formatea el código al estilo estándar. Como el formateador del IDE, pero igual para todos.</td></tr>
+        <tr><td class="p">composer require nombre/paquete</td><td>Añade una librería.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="note">
+    <p><b>Si algo se comporta raro después de un cambio de configuración</b>, casi siempre es la caché: <code>php artisan optimize:clear</code> la vacía entera. Es el equivalente a limpiar el <code>target/</code> antes de recompilar, y en el servidor será uno de los pasos del despliegue.</p>
+  </div>
+</section>
+
+</main>
+
+<footer class="wrap">
+  <p>Buzón de Mejora · guía interna · escrita el 1 de septiembre de 2026. Si algo de aquí no se entiende, es un fallo del texto, no tuyo: dímelo y lo reescribo.</p>
+</footer>

@@ -1,0 +1,529 @@
+<title>Modelo de datos del Buzón</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Serif:wght@500;600&display=swap">
+<style>
+:root{
+  --paper:#F1F4F1; --surface:#FFFFFF; --surface-2:#F8FAF8; --surface-3:#EDF1EE;
+  --line:#DCE3DE; --line-strong:#C2CCC6;
+  --ink:#131B19; --ink-2:#41504B; --ink-3:#6D7C76;
+  --accent:#0E5F52; --accent-2:#0B4A40; --accent-soft:#DCEDE7;
+  --ochre:#9C580F; --ochre-soft:#F7EAD8;
+  --ok:#276F44; --bad:#9E3838; --warn:#8A6110;
+  --radius:10px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#0C1211; --surface:#141C1A; --surface-2:#19231F; --surface-3:#1F2B27;
+    --line:#26332E; --line-strong:#3A4A43;
+    --ink:#E7EEEA; --ink-2:#AEBDB7; --ink-3:#7C8C86;
+    --accent:#54C1A7; --accent-2:#8CE0C9; --accent-soft:#123129;
+    --ochre:#D79B55; --ochre-soft:#31240F;
+    --ok:#63B683; --bad:#E08585; --warn:#CFA745;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0C1211; --surface:#141C1A; --surface-2:#19231F; --surface-3:#1F2B27;
+  --line:#26332E; --line-strong:#3A4A43;
+  --ink:#E7EEEA; --ink-2:#AEBDB7; --ink-3:#7C8C86;
+  --accent:#54C1A7; --accent-2:#8CE0C9; --accent-soft:#123129;
+  --ochre:#D79B55; --ochre-soft:#31240F;
+  --ok:#63B683; --bad:#E08585; --warn:#CFA745;
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font-family:"IBM Plex Sans","Segoe UI",system-ui,sans-serif;
+  font-size:16px; line-height:1.6; -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4{margin:0; text-wrap:balance; line-height:1.22}
+p{margin:0}
+:focus-visible{outline:2px solid var(--accent); outline-offset:2px; border-radius:4px}
+.wrap{max-width:900px; margin:0 auto; padding:0 24px}
+.eyebrow{font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:11.5px; font-weight:500; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-3)}
+
+header.doc{padding:54px 0 30px; border-bottom:1px solid var(--line)}
+header.doc h1{font-family:"IBM Plex Serif",Georgia,serif; font-weight:600; font-size:clamp(32px,5vw,48px); letter-spacing:-.015em; margin:14px 0 12px}
+header.doc .lede{color:var(--ink-2); font-size:17px; max-width:62ch}
+.meta{display:flex; flex-wrap:wrap; gap:0 40px; margin-top:24px; padding-top:18px; border-top:1px solid var(--line)}
+.meta div{display:flex; flex-direction:column; padding:4px 0}
+.meta dt{font-family:"IBM Plex Mono",monospace; font-size:10.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-3)}
+.meta dd{margin:0; font-size:14.5px; font-weight:500}
+
+section{padding:46px 0; border-bottom:1px solid var(--line)}
+section:last-of-type{border-bottom:0}
+.sec-head{margin-bottom:22px; max-width:70ch}
+.sec-head h2{font-family:"IBM Plex Serif",Georgia,serif; font-weight:600; font-size:clamp(22px,3vw,29px); letter-spacing:-.01em; margin:8px 0 10px}
+.sec-head p{color:var(--ink-2)}
+.body{max-width:70ch; display:grid; gap:14px}
+.body p{color:var(--ink-2)}
+.body strong{color:var(--ink)}
+
+figure{margin:24px 0 0; display:grid; gap:12px}
+figure svg{max-width:100%; height:auto; display:block; color:var(--ink-2)}
+figcaption{font-size:13.5px; color:var(--ink-3); max-width:70ch}
+.dgm-box{fill:var(--surface); stroke:var(--line-strong); stroke-width:1.2}
+.dgm-key{fill:var(--accent-soft); stroke:var(--accent); stroke-width:1.6}
+.dgm-t{font-family:"IBM Plex Mono",monospace; font-size:12px; fill:var(--ink); font-weight:600}
+.dgm-s{font-family:"IBM Plex Sans",sans-serif; font-size:10.5px; fill:var(--ink-3)}
+.dgm-l{font-family:"IBM Plex Sans",sans-serif; font-size:10.5px; fill:var(--ink-3)}
+.dgm-line{stroke:var(--line-strong); stroke-width:1.3; fill:none}
+.dgm-line-key{stroke:var(--accent); stroke-width:1.8; fill:none}
+
+.tbl{border:1px solid var(--line); border-radius:var(--radius); overflow-x:auto; background:var(--surface); margin-top:16px}
+table{width:100%; border-collapse:collapse; font-size:13.5px; min-width:620px}
+caption{
+  text-align:left; padding:12px 15px; background:var(--surface-2); border-bottom:1px solid var(--line);
+  font-family:"IBM Plex Mono",monospace; font-size:13px; font-weight:600; color:var(--accent);
+}
+caption span{display:block; font-family:"IBM Plex Sans",sans-serif; font-size:12px; font-weight:400; color:var(--ink-3); margin-top:2px}
+thead th{
+  text-align:left; font-family:"IBM Plex Mono",monospace; font-size:10px; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--ink-3); font-weight:500; padding:9px 15px; border-bottom:1px solid var(--line); white-space:nowrap;
+}
+tbody td{padding:9px 15px; border-bottom:1px solid var(--line); vertical-align:top; color:var(--ink-2)}
+tbody tr:last-child td{border-bottom:0}
+tbody td:first-child{font-family:"IBM Plex Mono",monospace; font-size:12.5px; color:var(--ink); white-space:nowrap; font-weight:500}
+td.ty{font-family:"IBM Plex Mono",monospace; font-size:11.5px; color:var(--ink-3); white-space:nowrap}
+.req{color:var(--bad); font-weight:600}
+.tag{
+  display:inline-block; font-family:"IBM Plex Mono",monospace; font-size:10.5px; padding:1px 6px; border-radius:4px;
+  background:var(--surface-3); color:var(--ink-3); margin-left:6px;
+}
+.tag.pk{background:var(--accent-soft); color:var(--accent)}
+
+.note{
+  border-left:3px solid var(--accent); background:var(--surface-2); border-radius:0 var(--radius) var(--radius) 0;
+  padding:14px 16px; display:grid; gap:8px; margin-top:18px;
+}
+.note b{color:var(--ink)}
+.note p{font-size:14.5px; color:var(--ink-2)}
+.note.warn{border-left-color:var(--ochre)}
+
+ol.steps{margin:16px 0 0; padding:0; list-style:none; display:grid; gap:12px; counter-reset:s}
+ol.steps li{display:grid; grid-template-columns:26px 1fr; gap:12px; align-items:start; counter-increment:s; font-size:15px; color:var(--ink-2)}
+ol.steps li::before{
+  content:counter(s); font-family:"IBM Plex Mono",monospace; font-size:11.5px; font-weight:600;
+  color:var(--accent); border:1px solid var(--accent); border-radius:50%; width:22px; height:22px;
+  display:grid; place-items:center; margin-top:2px;
+}
+ol.steps b{color:var(--ink)}
+
+ul.q{margin:14px 0 0; padding:0; list-style:none; display:grid; gap:12px}
+ul.q li{display:grid; grid-template-columns:auto 1fr; gap:12px; font-size:15px; color:var(--ink-2)}
+ul.q li .k{font-family:"IBM Plex Mono",monospace; font-size:11px; color:var(--ochre); padding-top:4px; letter-spacing:.06em}
+ul.q b{color:var(--ink)}
+
+code{font-family:"IBM Plex Mono",monospace; font-size:.88em; background:var(--surface-3); padding:1px 5px; border-radius:4px}
+footer{padding:28px 0 56px; color:var(--ink-3); font-size:13px}
+@media (max-width:600px){
+  .wrap{padding:0 16px}
+  section{padding:34px 0}
+}
+</style>
+
+<header class="doc">
+  <div class="wrap">
+    <p class="eyebrow">Buzón de Mejora · Fase 1 · v1.1 · 1 sep 2026</p>
+    <h1>Modelo de datos</h1>
+    <p class="lede">Las tablas sobre las que se construye la aplicación, con sus campos, sus reglas y quién puede cambiar qué. Es el documento que hay que revisar antes de escribir código: cambiar una tabla ahora cuesta cinco minutos, y cuando haya propuestas dentro, un día entero.</p>
+    <div class="meta">
+      <div><dt>Base de datos</dt><dd>MySQL 8 · MariaDB</dd></div>
+      <div><dt>Tablas propias</dt><dd>12</dd></div>
+      <div><dt>Entorno</dt><dd>Laravel · PHP 8.3</dd></div>
+      <div><dt>Estado</dt><dd>Revisado y cerrado</dd></div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+<section class="wrap">
+  <div class="sec-head">
+    <p class="eyebrow">Antes de empezar</p>
+    <h2>Inglés por dentro, español por fuera</h2>
+  </div>
+  <div class="body">
+    <p>Decidido: <strong>tablas, campos y código en inglés</strong>, que es lo que Laravel espera. Si una tabla se llama <code>propuestas</code> hay que ir explicándoselo al framework en cada relación y el código se llena de excepciones. <strong>Todo lo que ve el usuario va en español</strong>, siempre, incluidos los mensajes de error.</p>
+    <p>Para que puedas leer la base de datos sin traducir mentalmente, esta es la equivalencia completa:</p>
+  </div>
+
+  <div class="tbl">
+    <table>
+      <caption>Glosario<span>Cada tabla y su nombre en cristiano</span></caption>
+      <thead><tr><th>Tabla</th><th>Qué guarda</th></tr></thead>
+      <tbody>
+        <tr><td>proposals</td><td>Propuestas</td></tr>
+        <tr><td>status_changes</td><td>Historial de cambios de estado</td></tr>
+        <tr><td>comments</td><td>Comentarios (del hilo y de evaluación)</td></tr>
+        <tr><td>attachments</td><td>Archivos adjuntos</td></tr>
+        <tr><td>areas</td><td>Áreas o procesos</td></tr>
+        <tr><td>impacts</td><td>Tipos de impacto esperado</td></tr>
+        <tr><td>impact_proposal</td><td>Qué impactos tiene cada propuesta</td></tr>
+        <tr><td>proposal_statuses</td><td>Los estados posibles</td></tr>
+        <tr><td>committee_sessions</td><td>Sesiones del comité</td></tr>
+        <tr><td>users</td><td>Usuarios</td></tr>
+        <tr><td>roles · permissions</td><td>Roles y permisos</td></tr>
+        <tr><td>activity_log</td><td>Registro de actividad</td></tr>
+        <tr><td>notifications</td><td>Avisos dentro de la aplicación</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="wrap">
+  <div class="sec-head">
+    <p class="eyebrow">El mapa</p>
+    <h2>Cómo encaja todo</h2>
+    <p>Una propuesta es el centro; a su alrededor están las personas, los catálogos que tú podrás editar y —abajo— las tres tablas que guardan lo que va pasando con ella.</p>
+  </div>
+
+  <figure>
+    <svg viewBox="0 0 750 372" role="img" aria-label="Mapa de tablas: la tabla proposals en el centro, conectada con users, areas, committee_sessions, proposal_statuses e impacts; y por debajo con comments, status_changes y attachments">
+      <defs>
+        <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M 0 1 L 9 5 L 0 9 z" fill="currentColor"></path>
+        </marker>
+        <marker id="arK" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M 0 1 L 9 5 L 0 9 z" fill="var(--accent)"></path>
+        </marker>
+      </defs>
+
+      <line class="dgm-line" x1="390" y1="60" x2="390" y2="106" marker-end="url(#ar)"></line>
+      <line class="dgm-line" x1="172" y1="110" x2="291" y2="128" marker-end="url(#ar)"></line>
+      <line class="dgm-line" x1="172" y1="172" x2="291" y2="162" marker-end="url(#ar)"></line>
+      <line class="dgm-line" x1="578" y1="110" x2="489" y2="128" marker-end="url(#ar)"></line>
+      <line class="dgm-line" x1="578" y1="172" x2="489" y2="162" marker-end="url(#ar)"></line>
+      <line class="dgm-line-key" x1="390" y1="188" x2="390" y2="266" marker-end="url(#arK)"></line>
+      <line class="dgm-line" x1="336" y1="188" x2="196" y2="270" marker-end="url(#ar)"></line>
+      <line class="dgm-line" x1="444" y1="188" x2="562" y2="270" marker-end="url(#ar)"></line>
+
+      <rect class="dgm-box" x="295" y="14" width="190" height="46" rx="7"></rect>
+      <text class="dgm-t" x="390" y="34" text-anchor="middle">committee_sessions</text>
+      <text class="dgm-s" x="390" y="49" text-anchor="middle">sesiones del comité</text>
+
+      <rect class="dgm-box" x="20" y="88" width="152" height="46" rx="7"></rect>
+      <text class="dgm-t" x="96" y="108" text-anchor="middle">users</text>
+      <text class="dgm-s" x="96" y="123" text-anchor="middle">personas y roles</text>
+
+      <rect class="dgm-box" x="20" y="150" width="152" height="46" rx="7"></rect>
+      <text class="dgm-t" x="96" y="170" text-anchor="middle">areas</text>
+      <text class="dgm-s" x="96" y="185" text-anchor="middle">catálogo editable</text>
+
+      <rect class="dgm-box" x="578" y="88" width="152" height="46" rx="7"></rect>
+      <text class="dgm-t" x="654" y="108" text-anchor="middle">proposal_statuses</text>
+      <text class="dgm-s" x="654" y="123" text-anchor="middle">catálogo editable</text>
+
+      <rect class="dgm-box" x="578" y="150" width="152" height="46" rx="7"></rect>
+      <text class="dgm-t" x="654" y="170" text-anchor="middle">impacts</text>
+      <text class="dgm-s" x="654" y="185" text-anchor="middle">catálogo editable</text>
+
+      <rect class="dgm-key" x="295" y="108" width="190" height="80" rx="8"></rect>
+      <text class="dgm-t" x="390" y="140" text-anchor="middle">proposals</text>
+      <text class="dgm-s" x="390" y="158" text-anchor="middle">la propuesta y su</text>
+      <text class="dgm-s" x="390" y="172" text-anchor="middle">estado de hoy</text>
+
+      <rect class="dgm-box" x="20" y="272" width="176" height="52" rx="7"></rect>
+      <text class="dgm-t" x="108" y="294" text-anchor="middle">comments</text>
+      <text class="dgm-s" x="108" y="309" text-anchor="middle">hilo, interno o no</text>
+
+      <rect class="dgm-key" x="280" y="266" width="220" height="62" rx="8"></rect>
+      <text class="dgm-t" x="390" y="290" text-anchor="middle">status_changes</text>
+      <text class="dgm-s" x="390" y="306" text-anchor="middle">una fila por cada cambio</text>
+      <text class="dgm-s" x="390" y="319" text-anchor="middle">de estado · nunca se borra</text>
+
+      <rect class="dgm-box" x="562" y="272" width="168" height="52" rx="7"></rect>
+      <text class="dgm-t" x="646" y="294" text-anchor="middle">attachments</text>
+      <text class="dgm-s" x="646" y="309" text-anchor="middle">fotos y documentos</text>
+
+      <text class="dgm-l" x="398" y="86">va a una sesión</text>
+      <text class="dgm-l" x="232" y="105" text-anchor="middle">propone · revisa</text>
+      <text class="dgm-l" x="232" y="188" text-anchor="middle">clasifica</text>
+      <text class="dgm-l" x="524" y="105" text-anchor="middle">estado actual</text>
+      <text class="dgm-l" x="524" y="188" text-anchor="middle">impacto (N a N)</text>
+      <text class="dgm-l" x="400" y="228">historial e informes</text>
+      <text class="dgm-l" x="228" y="243" text-anchor="middle">conversación</text>
+      <text class="dgm-l" x="552" y="243" text-anchor="middle">archivos</text>
+    </svg>
+    <figcaption>Las dos cajas destacadas son las que sostienen el proyecto: <code>proposals</code> guarda el estado de hoy para poder listar rápido, y <code>status_changes</code> guarda cómo se ha llegado hasta él. De la segunda salen el historial de la ficha, los avisos y los tres gráficos de la pantalla de informes, sin escribir un solo dato a mano.</figcaption>
+  </figure>
+</section>
+
+<section class="wrap">
+  <div class="sec-head">
+    <p class="eyebrow">El núcleo</p>
+    <h2>Las tablas principales</h2>
+  </div>
+
+  <div class="tbl">
+    <table>
+      <caption>proposals<span>La propuesta: lo que escribe el proponente y lo que decide el comité</span></caption>
+      <thead><tr><th>Campo</th><th>Tipo</th><th>Para qué</th></tr></thead>
+      <tbody>
+        <tr><td>id<span class="tag pk">PK</span></td><td class="ty">bigint</td><td>Identificador interno.</td></tr>
+        <tr><td>reference</td><td class="ty">varchar(16) único</td><td>El que ve la gente: <code>MEJ-26-0087</code>. Se genera al enviar, no al guardar el borrador.</td></tr>
+        <tr><td>user_id</td><td class="ty">FK users</td><td>Proponente. Se guarda <strong>siempre</strong>, también en las anónimas; lo que cambia es que nunca se muestra.</td></tr>
+        <tr><td>area_id</td><td class="ty">FK areas</td><td>Área o proceso afectado.</td></tr>
+        <tr><td>title</td><td class="ty">varchar(140)</td><td>Título de la propuesta.</td></tr>
+        <tr><td>problem</td><td class="ty">text</td><td>«¿Cuál es el problema actual?»</td></tr>
+        <tr><td>proposal</td><td class="ty">text</td><td>«¿Qué propones?»</td></tr>
+        <tr><td>expected_benefit</td><td class="ty">text</td><td>«¿Qué beneficio esperas conseguir?»</td></tr>
+        <tr><td>priority</td><td class="ty">enum</td><td>baja · media · alta. La que marca el proponente.</td></tr>
+        <tr><td>committee_priority</td><td class="ty">enum, nulo</td><td>La que ajusta el comité. Si está vacía, vale la del proponente. Guardar las dos permite ver dónde no coinciden.</td></tr>
+        <tr><td>visibility</td><td class="ty">enum</td><td>public · private · anonymous.</td></tr>
+        <tr><td>status_id</td><td class="ty">FK proposal_statuses</td><td>Estado de hoy. Repetido aquí a propósito, para listar y filtrar sin recorrer el historial.</td></tr>
+        <tr><td>reviewer_id</td><td class="ty">FK users, nulo</td><td>Miembro del comité que la lleva.</td></tr>
+        <tr><td>implementer_id</td><td class="ty">FK users, nulo</td><td>Responsable de implantarla. Puede ser otra persona.</td></tr>
+        <tr><td>committee_session_id</td><td class="ty">FK, nulo</td><td>Sesión en cuyo orden del día entra.</td></tr>
+        <tr><td>decided_at</td><td class="ty">date, nulo</td><td>Fecha de la decisión.</td></tr>
+        <tr><td>decision_reason</td><td class="ty">text, nulo</td><td>Motivo. <span class="req">Obligatorio</span> al rechazar o aplazar.</td></tr>
+        <tr><td>revisit_on</td><td class="ty">date, nulo</td><td>Solo en aplazadas: cuándo se vuelve a mirar. El sistema avisa ese día.</td></tr>
+        <tr><td>planned_start_on</td><td class="ty">date, nulo</td><td>Inicio previsto de la implantación.</td></tr>
+        <tr><td>planned_end_on</td><td class="ty">date, nulo</td><td>Fin previsto. Si se pasa, salta un aviso.</td></tr>
+        <tr><td>started_on</td><td class="ty">date, nulo</td><td>Cuándo empezó de verdad la implantación. Sustituye al estado «En implantación»: la ficha muestra «en marcha desde el 15 sep» sin necesidad de que nadie mueva la propuesta de sitio.</td></tr>
+        <tr><td>closed_on</td><td class="ty">date, nulo</td><td>Fin real. La diferencia con la anterior es un dato interesante para dirección.</td></tr>
+        <tr><td>result_summary</td><td class="ty">text, nulo</td><td>Qué se consiguió. Es lo que se comunica al cerrar.</td></tr>
+        <tr><td>submitted_at</td><td class="ty">datetime, nulo</td><td>Vacío = borrador: solo lo ve su autor, no tiene referencia todavía y no aparece en ningún listado ni informe.</td></tr>
+        <tr><td>created_at · updated_at · deleted_at</td><td class="ty">timestamps</td><td>Borrado lógico: nada se elimina de verdad.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="tbl">
+    <table>
+      <caption>status_changes<span>El historial. Se escribe, nunca se edita ni se borra</span></caption>
+      <thead><tr><th>Campo</th><th>Tipo</th><th>Para qué</th></tr></thead>
+      <tbody>
+        <tr><td>id<span class="tag pk">PK</span></td><td class="ty">bigint</td><td></td></tr>
+        <tr><td>proposal_id</td><td class="ty">FK proposals</td><td>De qué propuesta.</td></tr>
+        <tr><td>from_status_id</td><td class="ty">FK, nulo</td><td>Estado anterior. Vacío en el primero.</td></tr>
+        <tr><td>to_status_id</td><td class="ty">FK</td><td>Estado nuevo.</td></tr>
+        <tr><td>user_id</td><td class="ty">FK users</td><td>Quién lo hizo.</td></tr>
+        <tr><td>comment</td><td class="ty">text, nulo</td><td>La explicación del cambio, si la hubo.</td></tr>
+        <tr><td>created_at</td><td class="ty">datetime</td><td>Cuándo. Con esto se calculan todos los tiempos medios.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="tbl">
+    <table>
+      <caption>comments<span>La conversación alrededor de la propuesta</span></caption>
+      <thead><tr><th>Campo</th><th>Tipo</th><th>Para qué</th></tr></thead>
+      <tbody>
+        <tr><td>id · proposal_id · user_id</td><td class="ty">bigint · FK</td><td></td></tr>
+        <tr><td>body</td><td class="ty">text</td><td>El comentario.</td></tr>
+        <tr><td>is_internal</td><td class="ty">booleano</td><td><strong>Verdadero</strong>: comentario de evaluación, solo lo ve el comité. <strong>Falso</strong>: mensaje al proponente, que sí lo ve.</td></tr>
+        <tr><td>created_at · updated_at</td><td class="ty">timestamps</td><td></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="tbl">
+    <table>
+      <caption>attachments<span>Fotos del puesto, hojas de cálculo, documentos</span></caption>
+      <thead><tr><th>Campo</th><th>Tipo</th><th>Para qué</th></tr></thead>
+      <tbody>
+        <tr><td>id · proposal_id · user_id</td><td class="ty">bigint · FK</td><td></td></tr>
+        <tr><td>original_name</td><td class="ty">varchar(255)</td><td>El nombre con el que lo subió la persona.</td></tr>
+        <tr><td>path</td><td class="ty">varchar(255)</td><td>Se guarda fuera de la carpeta pública, con nombre aleatorio, y se sirve solo a quien tiene permiso.</td></tr>
+        <tr><td>mime · size_bytes</td><td class="ty">varchar · int</td><td>Para validar tipo y tamaño (tope de 10 MB).</td></tr>
+        <tr><td>created_at</td><td class="ty">datetime</td><td></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="note">
+    <p><b>Por qué el estado está en dos sitios.</b> <code>proposals.status_id</code> guarda el estado de hoy y <code>status_changes</code> guarda cómo se llegó a él. Podría deducirse uno del otro, pero entonces cada listado tendría que recorrer todo el historial de cada propuesta. Duplicarlo es una decisión consciente: lo escribe una sola función, siempre las dos cosas a la vez, y nunca se tocan por separado.</p>
+  </div>
+</section>
+
+<section class="wrap">
+  <div class="sec-head">
+    <p class="eyebrow">Catálogos</p>
+    <h2>Lo que podrás cambiar sin llamarme</h2>
+    <p>Tres tablas de mantenimiento. Nada de esto está escrito en el código: se edita desde el panel de administración.</p>
+  </div>
+
+  <div class="tbl">
+    <table>
+      <caption>areas · impacts<span>Misma estructura las dos</span></caption>
+      <thead><tr><th>Campo</th><th>Tipo</th><th>Para qué</th></tr></thead>
+      <tbody>
+        <tr><td>id · name</td><td class="ty">bigint · varchar(80)</td><td>Áreas: Comercial, Operaciones, RRHH, Sistemas, Desarrollo, Calidad, Compras, Logística. Impactos: Calidad, Coste, Plazo, Cliente, Riesgo.</td></tr>
+        <tr><td>position</td><td class="ty">int</td><td>Orden en el desplegable.</td></tr>
+        <tr><td>is_active</td><td class="ty">booleano</td><td>Desactivar en lugar de borrar: si se borrara un área, las propuestas antiguas se quedarían huérfanas y los informes históricos dejarían de cuadrar.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="tbl">
+    <table>
+      <caption>proposal_statuses<span>Los estados y lo que cada uno exige</span></caption>
+      <thead><tr><th>Campo</th><th>Tipo</th><th>Para qué</th></tr></thead>
+      <tbody>
+        <tr><td>code</td><td class="ty">varchar(30) único</td><td>Nombre interno fijo. Son ocho: <code>new</code>, <code>in_review</code>, <code>awaiting_info</code>, <code>in_committee</code>, <code>approved</code>, <code>rejected</code>, <code>postponed</code>, <code>implemented</code>.</td></tr>
+        <tr><td>name</td><td class="ty">varchar(60)</td><td>Como se ve en pantalla. Este sí lo puedes cambiar.</td></tr>
+        <tr><td>color</td><td class="ty">varchar(20)</td><td>El color de la etiqueta.</td></tr>
+        <tr><td>is_open</td><td class="ty">booleano</td><td>Si cuenta como «pendiente» en los contadores del comité.</td></tr>
+        <tr><td>requires_reason</td><td class="ty">booleano</td><td>Si al pasar a este estado hay que escribir un motivo. Activo en rechazada y aplazada.</td></tr>
+        <tr><td>position · is_active</td><td class="ty">int · booleano</td><td></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="note warn">
+    <p><b>Añadir estados sí, quitarlos con cuidado.</b> Podrás crear estados nuevos desde el panel, pero los ocho de arriba llevan reglas asociadas en el código (quién puede pasar a ellos, qué avisos disparan). Esos se pueden renombrar y recolorear, no eliminar.</p>
+  </div>
+</section>
+
+<section class="wrap">
+  <div class="sec-head">
+    <p class="eyebrow">Personas</p>
+    <h2>Usuarios, roles y rastro</h2>
+  </div>
+
+  <div class="tbl">
+    <table>
+      <caption>users<span>Preparada para entrar con Microsoft o con contraseña</span></caption>
+      <thead><tr><th>Campo</th><th>Tipo</th><th>Para qué</th></tr></thead>
+      <tbody>
+        <tr><td>id · name · email</td><td class="ty">bigint · varchar</td><td>El correo es único y es la llave con Microsoft 365.</td></tr>
+        <tr><td>password</td><td class="ty">varchar, nulo</td><td>Vacío en quien entra con Microsoft. Permite convivir los dos métodos sin tocar nada más.</td></tr>
+        <tr><td>microsoft_id</td><td class="ty">varchar, nulo, único</td><td>Identificador que devuelve Entra ID la primera vez.</td></tr>
+        <tr><td>area_id</td><td class="ty">FK areas, nulo</td><td>Su área. Solo para rellenar el formulario por defecto.</td></tr>
+        <tr><td>is_active</td><td class="ty">booleano</td><td>Baja sin borrar: sus propuestas siguen contando en el histórico.</td></tr>
+        <tr><td>last_login_at</td><td class="ty">datetime, nulo</td><td></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="body" style="margin-top:20px">
+    <p><strong>Roles y permisos</strong> los aportan tres tablas del paquete estándar de Laravel (<code>roles</code>, <code>permissions</code> y sus enlaces), que no hace falta diseñar. Lo que sí decidimos nosotros es la lista de permisos, y es corta:</p>
+  </div>
+
+  <div class="tbl">
+    <table>
+      <caption>Los diez permisos<span>Un rol es simplemente un puñado de estos</span></caption>
+      <thead><tr><th>Permiso</th><th>Quién lo tiene</th></tr></thead>
+      <tbody>
+        <tr><td>proposals.create</td><td>Todos</td></tr>
+        <tr><td>proposals.view_public</td><td>Todos</td></tr>
+        <tr><td>proposals.view_restricted</td><td>Solo comité. Es el que abre las privadas y las anónimas.</td></tr>
+        <tr><td>proposals.review</td><td>Comité: asignarse, comentar en interno, pedir información, cambiar estados.</td></tr>
+        <tr><td>proposals.decide</td><td>Comité: aprobar, rechazar, aplazar.</td></tr>
+        <tr><td>proposals.implement</td><td>Comité y responsables de implantación: fechas y cierre.</td></tr>
+        <tr><td>reports.view</td><td>Comité y administración.</td></tr>
+        <tr><td>catalogs.manage</td><td>Administración y soporte técnico.</td></tr>
+        <tr><td>users.manage</td><td>Administración y soporte técnico.</td></tr>
+        <tr><td>activity.view</td><td>Administración y soporte técnico.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="note">
+    <p><b>El rastro de actividad</b> lo lleva otra tabla estándar, <code>activity_log</code>: guarda quién ha entrado, qué ha mirado y qué ha cambiado. Es la contrapartida honesta de la propuesta anónima: el sistema no enseña el nombre a nadie, y si alguien con acceso técnico intentara rodearlo, queda constancia.</p>
+  </div>
+</section>
+
+<section class="wrap">
+  <div class="sec-head">
+    <p class="eyebrow">Las reglas</p>
+    <h2>Qué transiciones existen</h2>
+    <p>El estado no se elige de un desplegable libre: cada paso tiene su origen, su destino, quién puede darlo y qué exige. Esto es lo que impide que una propuesta aparezca implantada sin haber pasado por el comité.</p>
+  </div>
+
+  <div class="tbl">
+    <table>
+      <thead><tr><th>Desde</th><th>Hacia</th><th>Quién</th><th>Exige</th></tr></thead>
+      <tbody>
+        <tr><td>—</td><td>Nueva</td><td>Cualquiera</td><td>Los campos del formulario</td></tr>
+        <tr><td>Nueva</td><td>En revisión</td><td>Comité</td><td>Asignarse como revisor</td></tr>
+        <tr><td>En revisión</td><td>Espera info</td><td>Revisor</td><td>Una pregunta escrita al proponente</td></tr>
+        <tr><td>Espera info</td><td>En revisión</td><td>Automático</td><td>Que el proponente conteste</td></tr>
+        <tr><td>En revisión</td><td>En comité</td><td>Revisor</td><td>Una sesión asignada</td></tr>
+        <tr><td>En comité</td><td>Aprobada</td><td>Comité</td><td>—</td></tr>
+        <tr><td>En comité</td><td>Rechazada</td><td>Comité</td><td><span class="req">Motivo escrito</span></td></tr>
+        <tr><td>En comité</td><td>Aplazada</td><td>Comité</td><td><span class="req">Motivo</span> y fecha de revisión</td></tr>
+        <tr><td>Aprobada</td><td>Implantada</td><td>Responsable</td><td>Fecha de cierre y <span class="req">resumen del resultado</span></td></tr>
+        <tr><td>Aplazada · Rechazada</td><td>En revisión</td><td>Comité</td><td>Reapertura con comentario</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="note">
+    <p><b>Ocho estados, no nueve.</b> Me quedo con <b>Aprobada</b> y elimino «En implantación», por dos razones. Una: «aprobada» es la palabra que usa la gente («me la han aprobado»), y un estado que nadie nombra es un estado que nadie actualiza. Dos: la información que aportaría el estado extra ya está en las fechas — con <code>started_on</code> rellena, la ficha dice «en marcha desde el 15 de septiembre» y la bandeja puede filtrar las aprobadas que aún no han arrancado. Un paso manual menos que se puede olvidar.</p>
+  </div>
+
+  <div class="body" style="margin-top:22px">
+    <p><strong>Cinco reglas más viven en el código, no en la base de datos:</strong></p>
+  </div>
+  <ol class="steps">
+    <li><b>La referencia</b> se compone como <code>MEJ-{año}-{secuencial}</code>, se reinicia cada enero y <strong>se asigna al enviar</strong>, no al guardar el borrador: así no quedan huecos en la numeración por borradores abandonados.</li>
+    <li><b>La visibilidad</b> se aplica en un único sitio, un filtro que se cuela en todas las consultas. Así ninguna pantalla nueva puede olvidarse de comprobarla: es imposible listar propuestas ajenas sin permiso aunque el código de esa pantalla no diga nada.</li>
+    <li><b>El anonimato</b> pasa por una sola función que decide cómo se firma una propuesta. No hay ningún otro sitio en la aplicación que lea el nombre del autor.</li>
+    <li><b>Los avisos</b> no los dispara cada pantalla, los dispara el cambio de estado. Añadir un estado nuevo mañana no obliga a repasar la aplicación entera buscando dónde faltaba avisar.</li>
+    <li><b>Los borradores</b> se guardan solos mientras se escribe y solo los ve su autor. Un borrador sin tocar durante 60 días genera un recordatorio; a los 90, se borra en silencio. Sin esto, la lista de borradores se convierte en un cementerio.</li>
+  </ol>
+</section>
+
+<section class="wrap">
+  <div class="sec-head">
+    <p class="eyebrow">Avisos</p>
+    <h2>Quién se entera de qué</h2>
+  </div>
+
+  <div class="tbl">
+    <table>
+      <thead><tr><th>Cuando pasa esto</th><th>Se entera</th><th>Por dónde</th></tr></thead>
+      <tbody>
+        <tr><td>Se envía una propuesta</td><td>Proponente (acuse) y comité</td><td>Correo + app</td></tr>
+        <tr><td>Un revisor se la asigna</td><td>Proponente y revisor</td><td>Correo + app</td></tr>
+        <tr><td>Se pide información</td><td>Proponente</td><td>Correo + app</td></tr>
+        <tr><td>El proponente contesta</td><td>Revisor</td><td>App</td></tr>
+        <tr><td>Entra en el orden del día</td><td>Proponente y comité</td><td>Correo + app</td></tr>
+        <tr><td>Hay decisión</td><td>Proponente y revisor</td><td>Correo + app</td></tr>
+        <tr><td>Se fijan las fechas de implantación</td><td>Proponente y responsable</td><td>Correo + app</td></tr>
+        <tr><td>Se pasa la fecha de fin prevista</td><td>Responsable y comité</td><td>Correo (tarea diaria)</td></tr>
+        <tr><td>Llega la fecha de una aplazada</td><td>Comité</td><td>Correo (tarea diaria)</td></tr>
+        <tr><td>Se implanta una <strong>pública</strong></td><td><strong>Toda la plantilla</strong>, con el resumen del resultado</td><td>Correo + app</td></tr>
+        <tr><td>Se implanta una <strong>privada</strong> o anónima</td><td>Solo proponente y comité</td><td>Correo + app</td></tr>
+        <tr><td>Un borrador lleva 60 días parado</td><td>Su autor</td><td>Correo (tarea diaria)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="note">
+    <p><b>Las dos últimas filas necesitan el cron.</b> Todo lo demás ocurre cuando alguien pulsa un botón, así que funcionaría igual sin tareas programadas. Los recordatorios de plazos y de propuestas aplazadas son los únicos que dependen de que Plesk pueda ejecutar algo cada día.</p>
+  </div>
+</section>
+
+<section class="wrap">
+  <div class="sec-head">
+    <p class="eyebrow">Siguiente paso</p>
+    <h2>Decidido el 1 de septiembre</h2>
+  </div>
+
+  <ul class="q">
+    <li><span class="k">01</span><span><b>Ocho estados.</b> Desaparece «En implantación»; se queda «Aprobada» y el arranque real se refleja con la fecha <code>started_on</code>.</span></li>
+    <li><span class="k">02</span><span><b>Hay borradores.</b> Se guardan solos, solo los ve su autor y no reservan número. Aviso a los 60 días, borrado a los 90.</span></li>
+    <li><span class="k">03</span><span><b>Al implantar una propuesta pública se entera toda la plantilla</b>, con el resumen del resultado. Las privadas y las anónimas se comunican solo al proponente. Si algún día queréis anunciar el resultado de una anónima sin desvelar quién la hizo, el comité podrá marcarlo a mano.</span></li>
+    <li><span class="k">04</span><span><b>Todo en inglés por dentro</b> —tablas, campos y código—, español en todo lo que ve el usuario. El glosario está al principio de este documento.</span></li>
+  </ul>
+
+  <div class="body" style="margin-top:26px">
+    <p>Con esto el modelo queda cerrado y puedo empezar a construir en cuanto exista el proyecto. <strong>La fase 0 es tuya</strong> y no depende de mí:</p>
+  </div>
+  <ol class="steps">
+    <li><b>Instala Laragon</b> con PHP 8.3 en tu equipo. Te paso los pasos exactos cuando llegue el momento.</li>
+    <li><b>Crea un repositorio privado</b> en GitHub para el proyecto.</li>
+    <li><b>Confirma el cron</b> en Plesk y dime qué tipos de tarea te ofrece.</li>
+    <li><b>Crea la base de datos MySQL</b> en Plesk y guarda usuario y contraseña; las necesitaremos en el primer despliegue.</li>
+  </ol>
+</section>
+
+</main>
+
+<footer class="wrap">
+  <p>Buzón de Mejora · Modelo de datos v1.1 · cerrado el 1 sep 2026. La maqueta de pantallas está en un documento aparte.</p>
+</footer>
