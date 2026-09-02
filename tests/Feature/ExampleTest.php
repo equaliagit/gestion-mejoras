@@ -2,18 +2,22 @@
 
 namespace Tests\Feature;
 
-// use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
+/**
+ * La raíz del sitio no tiene contenido propio: lleva al listado de propuestas,
+ * y ese exige haber entrado. Quien llegue de nuevas acaba en la pantalla de
+ * acceso, que es lo que comprobamos aquí.
+ */
 class ExampleTest extends TestCase
 {
-    /**
-     * A basic test example.
-     */
-    public function test_the_application_returns_a_successful_response(): void
+    public function test_la_raiz_lleva_al_listado_de_propuestas(): void
     {
-        $response = $this->get('/');
+        $this->get('/')->assertRedirect('/propuestas');
+    }
 
-        $response->assertStatus(200);
+    public function test_y_el_listado_exige_haber_entrado(): void
+    {
+        $this->get('/propuestas')->assertRedirect('/entrar');
     }
 }

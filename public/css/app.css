@@ -1,0 +1,213 @@
+/* Buzón de Mejora — hoja de estilos única.
+   Los colores viven todos aquí arriba como variables: cambiando estas líneas
+   cambia la aplicación entera. Funciona en modo claro y oscuro según lo que
+   tenga configurado cada persona en su sistema. */
+
+:root{
+  --paper:#F1F4F1; --surface:#FFFFFF; --surface-2:#F8FAF8; --surface-3:#EDF1EE;
+  --line:#DCE3DE; --line-strong:#C2CCC6;
+  --ink:#131B19; --ink-2:#41504B; --ink-3:#6D7C76;
+  --accent:#0E5F52; --accent-2:#0B4A40; --accent-soft:#DCEDE7; --on-accent:#FFFFFF;
+  --ochre:#9C580F; --ochre-soft:#F7EAD8;
+  --ok:#276F44; --ok-soft:#DCEEE2;
+  --warn:#8A6110; --warn-soft:#F6EBD2;
+  --bad:#9E3838; --bad-soft:#F6E1E1;
+  --info:#2A578A; --info-soft:#DEE9F5;
+  --shadow:0 1px 2px rgba(19,27,25,.06), 0 12px 32px -12px rgba(19,27,25,.18);
+  --radius:10px;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --paper:#0C1211; --surface:#141C1A; --surface-2:#19231F; --surface-3:#1F2B27;
+    --line:#26332E; --line-strong:#3A4A43;
+    --ink:#E7EEEA; --ink-2:#AEBDB7; --ink-3:#7C8C86;
+    --accent:#54C1A7; --accent-2:#8CE0C9; --accent-soft:#123129; --on-accent:#07201B;
+    --ochre:#D79B55; --ochre-soft:#31240F;
+    --ok:#63B683; --ok-soft:#132A1D;
+    --warn:#CFA745; --warn-soft:#2C2410;
+    --bad:#E08585; --bad-soft:#301A1A;
+    --info:#7CADE0; --info-soft:#152534;
+    --shadow:0 1px 2px rgba(0,0,0,.5), 0 14px 36px -14px rgba(0,0,0,.7);
+  }
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font-family:"IBM Plex Sans","Segoe UI",system-ui,sans-serif;
+  font-size:16px; line-height:1.55; -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4{margin:0; line-height:1.2; text-wrap:balance}
+p{margin:0}
+a{color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent); outline-offset:2px; border-radius:4px}
+.visually-hidden{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+
+/* ---------------------------------------------------------------- Estructura */
+.app{display:grid; grid-template-columns:230px 1fr; min-height:100vh}
+.side{
+  background:var(--surface-2); border-right:1px solid var(--line);
+  padding:18px 12px; display:flex; flex-direction:column; gap:22px;
+}
+.brand{display:flex; align-items:center; gap:9px; padding:0 8px; text-decoration:none; color:inherit}
+.brand b{font-size:14.5px; font-weight:600; display:block}
+.brand span span{display:block; font-family:"IBM Plex Mono",monospace; font-size:9.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-3)}
+.navgroup{display:flex; flex-direction:column; gap:2px}
+.navgroup .eyebrow{padding:0 8px 6px}
+.eyebrow{font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:10px; font-weight:500; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-3)}
+.nav{
+  display:flex; align-items:center; gap:9px; padding:8px 10px; border-radius:7px;
+  border:1px solid transparent; font-size:13.5px; color:var(--ink-2); text-decoration:none;
+}
+.nav:hover{background:var(--surface-3); color:var(--ink)}
+.nav.is-on{background:var(--accent-soft); color:var(--accent); border-color:var(--accent); font-weight:600}
+.nav .count{margin-left:auto; font-family:"IBM Plex Mono",monospace; font-size:11px; font-variant-numeric:tabular-nums}
+.who{margin-top:auto; display:flex; align-items:center; gap:9px; padding:10px 8px 0; border-top:1px solid var(--line)}
+.avatar{
+  width:28px; height:28px; border-radius:50%; flex:none; display:grid; place-items:center;
+  background:var(--accent-soft); color:var(--accent); font-size:10.5px; font-weight:600;
+  font-family:"IBM Plex Mono",monospace;
+}
+.who b{font-size:12.5px; font-weight:600; display:block}
+.who small{display:block; color:var(--ink-3); font-size:11px}
+.who form{margin-left:auto}
+.linkbtn{background:none; border:0; padding:4px; font:inherit; font-size:11.5px; color:var(--ink-3); cursor:pointer; text-decoration:underline}
+.linkbtn:hover{color:var(--ink)}
+
+.main{padding:26px 30px 40px; min-width:0; max-width:1180px}
+.topbar{display:flex; align-items:flex-start; gap:16px; flex-wrap:wrap; margin-bottom:22px}
+.topbar h1{font-size:22px; font-weight:600; letter-spacing:-.01em}
+.topbar .sub{color:var(--ink-3); font-size:13.5px; margin-top:3px}
+.grow{flex:1 1 240px; min-width:0}
+
+/* ------------------------------------------------------------------ Controles */
+.btn{
+  display:inline-flex; align-items:center; gap:7px; padding:9px 15px; border-radius:7px;
+  font:inherit; font-size:13.5px; font-weight:600; cursor:pointer; text-decoration:none;
+  border:1px solid var(--line-strong); background:var(--surface); color:var(--ink);
+}
+.btn:hover{border-color:var(--ink-3)}
+.btn-pri{background:var(--accent); border-color:var(--accent); color:var(--on-accent)}
+.btn-pri:hover{background:var(--accent-2); border-color:var(--accent-2)}
+.btn-sm{padding:6px 11px; font-size:12.5px}
+
+/* ---------------------------------------------------------------- Indicadores */
+.kpis{display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:12px; margin-bottom:24px}
+.kpi{border:1px solid var(--line); border-radius:var(--radius); padding:13px 15px; background:var(--surface-2)}
+.kpi .n{font-family:"IBM Plex Mono",monospace; font-size:26px; font-weight:600; letter-spacing:-.02em; font-variant-numeric:tabular-nums}
+.kpi .l{font-size:12px; color:var(--ink-3); margin-top:2px}
+
+/* --------------------------------------------------------------------- Tablas */
+.tablewrap{border:1px solid var(--line); border-radius:var(--radius); overflow-x:auto; background:var(--surface)}
+table{width:100%; border-collapse:collapse; font-size:13.5px; min-width:660px}
+thead th{
+  text-align:left; font-family:"IBM Plex Mono",monospace; font-size:10.5px; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--ink-3); font-weight:500; padding:11px 15px;
+  border-bottom:1px solid var(--line); background:var(--surface-2); white-space:nowrap;
+}
+tbody td{padding:12px 15px; border-bottom:1px solid var(--line); vertical-align:middle}
+tbody tr:last-child td{border-bottom:0}
+tbody tr:hover{background:var(--surface-2)}
+.ref{font-family:"IBM Plex Mono",monospace; font-size:12px; color:var(--ink-3); white-space:nowrap}
+.tt{font-weight:600; display:block; color:var(--ink); text-decoration:none}
+.tt:hover{text-decoration:underline}
+.tt + small{color:var(--ink-3); font-size:12px}
+td.num{font-variant-numeric:tabular-nums; white-space:nowrap; color:var(--ink-2)}
+
+/* -------------------------------------------------------------------- Estados */
+.pill{display:inline-flex; align-items:center; gap:6px; padding:3px 9px 3px 8px; border-radius:99px; font-size:11.5px; font-weight:600; white-space:nowrap}
+.pill::before{content:""; width:6px; height:6px; border-radius:50%; background:currentColor; flex:none}
+.pill-blue{background:var(--info-soft); color:var(--info)}
+.pill-amber{background:var(--warn-soft); color:var(--warn)}
+.pill-orange{background:var(--ochre-soft); color:var(--ochre)}
+.pill-teal{background:var(--accent-soft); color:var(--accent)}
+.pill-green{background:var(--ok-soft); color:var(--ok)}
+.pill-red{background:var(--bad-soft); color:var(--bad)}
+.pill-gray{background:var(--surface-3); color:var(--ink-3)}
+.prio{font-family:"IBM Plex Mono",monospace; font-size:11.5px; font-weight:600}
+.prio-high{color:var(--bad)}
+.prio-medium{color:var(--warn)}
+.prio-low{color:var(--ink-3)}
+.tag{display:inline-flex; align-items:center; gap:4px; font-size:11px; color:var(--ink-3); font-family:"IBM Plex Mono",monospace}
+.tag-dashed{padding:2px 8px; border-radius:99px; border:1px dashed var(--line-strong)}
+
+/* ----------------------------------------------------------------- Formulario */
+form.stack{display:grid; gap:20px; max-width:760px}
+.row{display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:20px}
+.field{display:flex; flex-direction:column; gap:6px; min-width:0}
+.field label{font-size:13px; font-weight:600}
+.field .hint{font-size:12px; color:var(--ink-3); line-height:1.45}
+.req{color:var(--bad); font-weight:600}
+input[type=text], input[type=email], input[type=password], select, textarea{
+  width:100%; font:inherit; font-size:14px; color:var(--ink);
+  background:var(--surface); border:1px solid var(--line-strong); border-radius:8px;
+  padding:10px 12px;
+}
+textarea{min-height:110px; resize:vertical; line-height:1.55}
+input:focus, select:focus, textarea:focus{outline:2px solid var(--accent); outline-offset:1px; border-color:var(--accent)}
+.choices{display:flex; flex-wrap:wrap; gap:8px}
+.choice{
+  display:inline-flex; align-items:center; gap:8px; padding:8px 13px; border-radius:99px;
+  border:1px solid var(--line-strong); font-size:13px; color:var(--ink-2);
+  background:var(--surface); cursor:pointer;
+}
+.choice:hover{border-color:var(--ink-3)}
+.choice input{margin:0; accent-color:var(--accent)}
+.choice:has(input:checked){border-color:var(--accent); color:var(--accent); background:var(--accent-soft); font-weight:600}
+.choice:has(input:focus-visible){outline:2px solid var(--accent); outline-offset:2px}
+.visib{border:1px solid var(--line); border-radius:var(--radius); padding:16px; background:var(--surface-2); display:grid; gap:12px}
+.formfoot{display:flex; flex-wrap:wrap; gap:12px; align-items:center; justify-content:flex-end}
+.formfoot .note{margin-right:auto; font-size:12.5px; color:var(--ink-3); max-width:46ch}
+.error{font-size:12.5px; color:var(--bad); font-weight:500}
+input[aria-invalid=true], textarea[aria-invalid=true], select[aria-invalid=true]{border-color:var(--bad)}
+
+/* -------------------------------------------------------------------- Avisos */
+.flash{
+  border:1px solid var(--line); border-left:3px solid var(--accent); background:var(--surface-2);
+  border-radius:0 var(--radius) var(--radius) 0; padding:13px 16px; margin-bottom:22px; font-size:14px;
+}
+.flash strong{color:var(--ink)}
+.flash-bad{border-left-color:var(--bad)}
+.empty{
+  border:1px dashed var(--line-strong); border-radius:var(--radius); padding:40px 24px;
+  text-align:center; color:var(--ink-3); display:grid; gap:12px; justify-items:center; background:var(--surface-2);
+}
+.empty h2{font-size:16px; color:var(--ink)}
+.empty p{max-width:44ch; font-size:14px}
+
+/* -------------------------------------------------------------------- Entrada */
+.login{min-height:100vh; display:grid; place-items:center; padding:24px}
+.login-card{
+  width:100%; max-width:400px; background:var(--surface); border:1px solid var(--line);
+  border-radius:14px; padding:32px; box-shadow:var(--shadow); display:grid; gap:22px;
+}
+.login-head{display:grid; gap:8px; justify-items:center; text-align:center}
+.login-head h1{font-size:20px; font-weight:600}
+.login-head p{font-size:13.5px; color:var(--ink-3)}
+
+/* ---------------------------------------------------------------- Responsive */
+@media (max-width:900px){
+  .app{grid-template-columns:1fr}
+  .side{
+    border-right:0; border-bottom:1px solid var(--line); flex-direction:row;
+    align-items:center; gap:14px; overflow-x:auto; padding:12px;
+  }
+  .side .brand{padding:0}
+  .side .navgroup{flex-direction:row; gap:6px}
+  .side .navgroup .eyebrow{display:none}
+  .side .nav{white-space:nowrap}
+  .side .who{margin:0 0 0 auto; padding:0; border:0}
+  .side .who b, .side .who small{display:none}
+  .main{padding:20px 16px 32px}
+
+  /* En móvil las tablas se convierten en fichas: nada de desplazarse en horizontal. */
+  .tablewrap{border:0; background:none; overflow:visible}
+  table, thead, tbody, tr, td{display:block; width:100%; min-width:0}
+  thead{display:none}
+  tbody tr{
+    border:1px solid var(--line); border-radius:var(--radius); background:var(--surface);
+    margin-bottom:10px; padding:12px 14px;
+  }
+  tbody td{border:0; padding:3px 0}
+  tbody td.num{color:var(--ink-3); font-size:12px}
+}
