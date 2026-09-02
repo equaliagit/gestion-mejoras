@@ -32,7 +32,7 @@
             <tr>
                 <td class="ref">{{ $propuesta->reference }}</td>
                 <td>
-                    <span class="tt">{{ $propuesta->title }}</span>
+                    <a class="tt" href="{{ route('proposals.show', $propuesta) }}">{{ $propuesta->title }}</a>
                     @if ($propuesta->status->hasCode(\App\Models\ProposalStatus::IMPLEMENTED) && $propuesta->result_summary)
                         <small>{{ Str::limit($propuesta->result_summary, 90) }}</small>
                     @endif

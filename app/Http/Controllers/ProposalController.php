@@ -9,7 +9,9 @@ use App\Models\Area;
 use App\Models\Impact;
 use App\Models\Proposal;
 use App\Models\ProposalStatus;
+use App\Models\User;
 use App\Services\ProposalWorkflow;
+use App\Support\Workflow;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -76,6 +78,34 @@ class ProposalController extends Controller
             'impactos' => Impact::active()->get(),
             'prioridades' => Priority::cases(),
             'visibilidades' => Visibility::cases(),
+        ] + $this->datosDelMenu($request));
+    }
+
+    /**
+     * La ficha completa. La propuesta llega ya resuelta por la URL, y si el
+     * filtro de visibilidad no la deja pasar, Laravel devuelve un 404 antes
+     * de llegar aquí: quien no puede verla ni siquiera sabe que existe.
+     */
+    public function show(Request $request, Proposal $proposal): View
+    {
+        $this->authorize('view', $proposal);
+
+        $proposal->load([
+            'area', 'status', 'author', 'reviewer', 'implementer', 'impacts', 'committeeSession',
+            'statusChanges.toStatus', 'statusChanges.fromStatus', 'statusChanges.user',
+            'comments.user',
+        ]);
+
+        return view('proposals.show', [
+            'propuesta' => $proposal,
+            'comentarios' => $proposal->comments->filter(
+                fn ($c) => ! $c->is_internal || $request->user()->canSeeRestrictedProposals()
+            ),
+            'siguientes' => Workflow::nextFrom($proposal->status->code),
+            // Para el desplegable de «responsable de implantación».
+            'responsables' => $request->user()->can('implement', $proposal)
+                ? User::query()->where('is_active', true)->orderBy('name')->get()
+                : collect(),
         ] + $this->datosDelMenu($request));
     }
 

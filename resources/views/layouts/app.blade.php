@@ -42,6 +42,15 @@
             </a>
         </nav>
 
+        @can('proposals.review')
+            <nav class="navgroup" aria-label="Gestión">
+                <p class="eyebrow">Gestión</p>
+                <a class="nav {{ request()->routeIs('committee.inbox') ? 'is-on' : '' }}" href="{{ route('committee.inbox') }}">
+                    Bandeja del comité
+                </a>
+            </nav>
+        @endcan
+
         <div class="who">
             <span class="avatar">{{ $iniciales ?? '' }}</span>
             <span>

@@ -211,3 +211,81 @@ input[aria-invalid=true], textarea[aria-invalid=true], select[aria-invalid=true]
   tbody td{border:0; padding:3px 0}
   tbody td.num{color:var(--ink-3); font-size:12px}
 }
+
+/* ---------------------------------------------------------------- La ficha */
+.detail{display:grid; grid-template-columns:1.6fr 1fr; gap:22px; align-items:start}
+.col{display:grid; gap:18px; min-width:0}
+.block{border:1px solid var(--line); border-radius:var(--radius); background:var(--surface); overflow:hidden}
+.block-h{
+  padding:11px 16px; border-bottom:1px solid var(--line); background:var(--surface-2);
+  font-family:"IBM Plex Mono",monospace; font-size:10.5px; letter-spacing:.11em;
+  text-transform:uppercase; color:var(--ink-3);
+  display:flex; align-items:center; justify-content:space-between; gap:10px;
+}
+.block-b{padding:16px}
+.block-b h3{font-size:15px; margin-bottom:6px}
+.block-b h3 + p{margin-bottom:2px}
+.block-b > p{font-size:14px; color:var(--ink-2); line-height:1.62}
+.block-b p + h3{margin-top:18px}
+.dl{display:grid; grid-template-columns:auto 1fr; gap:10px 16px; font-size:13.5px; align-items:baseline}
+.dl dt{color:var(--ink-3); white-space:nowrap}
+.dl dd{margin:0; font-weight:500; text-align:right}
+.dl dd.vacio{color:var(--ink-3); font-weight:400}
+.acciones{display:flex; gap:8px; flex-wrap:wrap; margin-top:16px; padding-top:16px; border-top:1px solid var(--line)}
+.divisor{height:1px; background:var(--line); margin:16px 0}
+
+/* Historial */
+.tl{list-style:none; margin:0; padding:2px 0; display:flex; flex-direction:column}
+.tl li{display:grid; grid-template-columns:16px 1fr; gap:12px; padding-bottom:18px; position:relative}
+.tl li:last-child{padding-bottom:0}
+.tl li::before{content:""; position:absolute; left:7px; top:16px; bottom:-2px; width:1.5px; background:var(--line)}
+.tl li:last-child::before{display:none}
+.tl .dot{width:14px; height:14px; border-radius:50%; border:2.5px solid var(--accent); background:var(--surface); margin-top:2px; z-index:1}
+.tl .dot.done{background:var(--accent)}
+.tl b{font-size:13.5px; display:block}
+.tl small{font-size:12px; color:var(--ink-3); display:block; margin-top:1px}
+.tl em{font-style:normal; font-family:"IBM Plex Mono",monospace; font-size:11px; color:var(--ink-3); display:block; margin-top:2px}
+.tl q{color:var(--ink-2); font-size:13px; display:block; margin-top:5px; padding-left:10px; border-left:2px solid var(--line); font-style:italic}
+
+/* Hilo de comentarios */
+.hilo{display:grid; gap:16px}
+.mensaje{display:grid; gap:4px}
+.mensaje .quien{font-size:12px; color:var(--ink-3); font-family:"IBM Plex Mono",monospace}
+.mensaje p{font-size:14px; color:var(--ink-2); line-height:1.6}
+.mensaje.interno{border-left:2px solid var(--ochre); padding-left:12px}
+.mensaje.interno .quien{color:var(--ochre)}
+.responder{display:grid; gap:10px; padding-top:16px; border-top:1px solid var(--line)}
+.responder textarea{min-height:80px}
+
+/* Formularios dentro de la ficha, ocultos hasta que se piden */
+details.accion{border:1px solid var(--line); border-radius:8px; background:var(--surface-2); overflow:hidden}
+details.accion > summary{
+  padding:10px 14px; cursor:pointer; font-size:13.5px; font-weight:600; color:var(--ink-2);
+  list-style:none; display:flex; align-items:center; gap:8px;
+}
+details.accion > summary::-webkit-details-marker{display:none}
+details.accion > summary::before{content:"▸"; color:var(--ink-3); font-size:11px}
+details.accion[open] > summary::before{content:"▾"}
+details.accion > summary:hover{color:var(--ink)}
+details.accion[open] > summary{border-bottom:1px solid var(--line); background:var(--surface-3)}
+details.accion .cuerpo{padding:14px; display:grid; gap:12px}
+details.accion .cuerpo label{font-size:12.5px; font-weight:600}
+details.accion .cuerpo textarea{min-height:70px}
+
+.chips{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:18px}
+.chip{
+  display:inline-flex; align-items:center; gap:7px; padding:6px 12px; border-radius:99px;
+  border:1px solid var(--line-strong); background:var(--surface); font-size:12.5px;
+  color:var(--ink-2); text-decoration:none;
+}
+.chip:hover{border-color:var(--ink-3); color:var(--ink)}
+.chip.on{background:var(--ink); color:var(--paper); border-color:var(--ink)}
+.chip b{font-family:"IBM Plex Mono",monospace; font-weight:600; font-size:11.5px}
+
+.migas{font-size:12.5px; color:var(--ink-3); margin-bottom:10px}
+.migas a{color:var(--ink-3)}
+.migas a:hover{color:var(--ink)}
+
+@media (max-width:900px){
+  .detail{grid-template-columns:1fr}
+}

@@ -1,6 +1,9 @@
 <?php
 
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\CommentController;
+use App\Http\Controllers\CommitteeController;
+use App\Http\Controllers\ProposalActionController;
 use App\Http\Controllers\ProposalController;
 use Illuminate\Support\Facades\Route;
 
@@ -31,4 +34,27 @@ Route::middleware('auth')->group(function () {
     Route::get('/propuestas/empresa', [ProposalController::class, 'shared'])->name('proposals.shared');
     Route::get('/propuestas/nueva', [ProposalController::class, 'create'])->name('proposals.create');
     Route::post('/propuestas', [ProposalController::class, 'store'])->name('proposals.store');
+
+    // La bandeja del comité. El middleware corta el paso a quien no tenga
+    // el permiso, antes incluso de entrar en el controlador.
+    Route::get('/comite', [CommitteeController::class, 'inbox'])
+        ->middleware('can:proposals.review')
+        ->name('committee.inbox');
+
+    // La ficha. {proposal} se convierte solo en el objeto Proposal.
+    Route::get('/propuestas/{proposal}', [ProposalController::class, 'show'])->name('proposals.show');
+
+    Route::post('/propuestas/{proposal}/comentarios', [CommentController::class, 'store'])->name('comments.store');
+
+    // Las acciones del flujo. Cada una es un formulario que llega por POST,
+    // y cada una comprueba su permiso en el controlador.
+    Route::prefix('/propuestas/{proposal}')->name('proposals.')->group(function () {
+        Route::post('/asignarme', [ProposalActionController::class, 'assignToMe'])->name('assign');
+        Route::post('/pedir-info', [ProposalActionController::class, 'requestInfo'])->name('requestInfo');
+        Route::post('/al-comite', [ProposalActionController::class, 'sendToCommittee'])->name('toCommittee');
+        Route::post('/decidir', [ProposalActionController::class, 'decide'])->name('decide');
+        Route::post('/planificar', [ProposalActionController::class, 'plan'])->name('plan');
+        Route::post('/implantada', [ProposalActionController::class, 'markImplemented'])->name('implemented');
+        Route::post('/reabrir', [ProposalActionController::class, 'reopen'])->name('reopen');
+    });
 });

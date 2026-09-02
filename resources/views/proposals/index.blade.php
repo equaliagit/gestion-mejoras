@@ -41,7 +41,7 @@
             <tr>
                 <td class="ref">{{ $propuesta->reference ?? '—' }}</td>
                 <td>
-                    <span class="tt">{{ $propuesta->title }}</span>
+                    <a class="tt" href="{{ route('proposals.show', $propuesta) }}">{{ $propuesta->title }}</a>
                     <small>
                         @if ($propuesta->isDraft())
                             Borrador sin enviar
