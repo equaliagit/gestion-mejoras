@@ -30,7 +30,15 @@ class CatalogSeeder extends Seeder
             );
         }
 
-        $impacts = ['Calidad', 'Coste', 'Plazo', 'Cliente', 'Riesgo'];
+        // En lenguaje llano a propósito: la etiqueta la elige quien propone,
+        // no un auditor de calidad.
+        $impacts = [
+            'Menos errores',
+            'Menos coste',
+            'Menos tiempo de espera',
+            'Mejor para el cliente',
+            'Menos riesgo',
+        ];
 
         foreach ($impacts as $i => $name) {
             DB::table('impacts')->updateOrInsert(

@@ -49,6 +49,24 @@ class ProposalController extends Controller
         ] + $this->datosDelMenu($request));
     }
 
+    /**
+     * Las propuestas públicas de toda la empresa.
+     *
+     * Se pide explícitamente solo las públicas: el filtro de visibilidad
+     * dejaría pasar también las privadas propias, y aquí no pintan nada.
+     */
+    public function shared(Request $request): View
+    {
+        return view('proposals.shared', [
+            'propuestas' => Proposal::query()
+                ->submitted()
+                ->where('visibility', Visibility::Public)
+                ->with(['area', 'status', 'author'])
+                ->latest('submitted_at')
+                ->get(),
+        ] + $this->datosDelMenu($request));
+    }
+
     public function create(Request $request): View
     {
         $this->authorize('create', Proposal::class);

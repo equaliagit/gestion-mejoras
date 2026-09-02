@@ -34,6 +34,9 @@
                     <span class="count">{{ $misPropuestas }}</span>
                 @endif
             </a>
+            <a class="nav {{ request()->routeIs('proposals.shared') ? 'is-on' : '' }}" href="{{ route('proposals.shared') }}">
+                Propuestas de la empresa
+            </a>
             <a class="nav {{ request()->routeIs('proposals.create') ? 'is-on' : '' }}" href="{{ route('proposals.create') }}">
                 Nueva propuesta
             </a>

@@ -35,7 +35,9 @@ class StoreProposalRequest extends FormRequest
             'expected_benefit' => ['required', 'string', 'min:10', 'max:5000'],
             'priority' => ['required', Rule::enum(Priority::class)],
             'visibility' => ['required', Rule::enum(Visibility::class)],
-            'impacts' => ['required', 'array', 'min:1'],
+            // Opcional a propósito: el formulario ya pide tres párrafos, y
+            // quien no tenga claro dónde encaja su idea no debería atascarse aquí.
+            'impacts' => ['nullable', 'array'],
             'impacts.*' => ['integer', Rule::exists('impacts', 'id')->where('is_active', true)],
             'accion' => ['required', Rule::in(['borrador', 'enviar'])],
         ];
@@ -56,8 +58,6 @@ class StoreProposalRequest extends FormRequest
             'expected_benefit.min' => 'Un poco más de detalle nos ayuda a valorarla.',
             'priority.required' => 'Marca qué prioridad le das.',
             'visibility.required' => 'Elige quién puede verla.',
-            'impacts.required' => 'Marca al menos un tipo de impacto.',
-            'impacts.min' => 'Marca al menos un tipo de impacto.',
         ];
     }
 

@@ -93,8 +93,20 @@ class PantallaPropuestasTest extends TestCase
             ->get('/propuestas/nueva')
             ->assertOk()
             ->assertSee('Operaciones')
-            ->assertSee('Calidad')
+            ->assertSee('Menos errores')
             ->assertSee('Anónima');
+    }
+
+    public function test_el_impacto_es_opcional(): void
+    {
+        $this->actingAs($this->empleada)
+            ->post('/propuestas', $this->datosValidos(['impacts' => []]))
+            ->assertSessionHasNoErrors();
+
+        $propuesta = Proposal::withoutGlobalScopes()->firstOrFail();
+
+        $this->assertSame(0, $propuesta->impacts()->count());
+        $this->assertNotNull($propuesta->reference);
     }
 
     public function test_enviar_una_propuesta_la_deja_registrada_y_con_numero(): void
@@ -130,10 +142,10 @@ class PantallaPropuestasTest extends TestCase
     {
         $respuesta = $this->actingAs($this->empleada)
             ->from('/propuestas/nueva')
-            ->post('/propuestas', $this->datosValidos(['title' => '', 'impacts' => []]));
+            ->post('/propuestas', $this->datosValidos(['title' => '', 'problem' => '']));
 
         $respuesta->assertRedirect('/propuestas/nueva');
-        $respuesta->assertSessionHasErrors(['title', 'impacts']);
+        $respuesta->assertSessionHasErrors(['title', 'problem']);
 
         $this->assertSame(0, Proposal::withoutGlobalScopes()->count());
     }

@@ -223,8 +223,11 @@ class ProposalWorkflow
      */
     private function moveTo(Proposal $proposal, string $to, User $actor, ?string $comment = null): Proposal
     {
-        $from = $proposal->status?->code
-            ?? Status::query()->whereKey($proposal->status_id)->value('code');
+        // El estado de partida se lee de la base de datos, no de la relación
+        // que el modelo tenga cargada: si alguien tocó la propuesta por otro
+        // lado, esa copia en memoria puede estar obsoleta y validaríamos el
+        // salto contra un estado que ya no es el real.
+        $from = Status::query()->whereKey($proposal->status_id)->value('code');
 
         if (! Workflow::allows($from, $to)) {
             throw InvalidTransition::between($from, $to);

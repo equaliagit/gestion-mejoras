@@ -65,7 +65,7 @@
         </div>
 
         <div class="field">
-            <label>Impacto esperado <span class="req">*</span></label>
+            <label>¿Por dónde mejora?</label>
             <div class="choices">
                 @foreach ($impactos as $impacto)
                     <label class="choice">
@@ -75,7 +75,7 @@
                     </label>
                 @endforeach
             </div>
-            <p class="hint">Puedes marcar más de uno.</p>
+            <p class="hint">Marca lo que veas claro, puedes elegir varias. Si no lo tienes claro, déjalo en blanco y sigue.</p>
             @error('impacts') <p class="error">{{ $message }}</p> @enderror
         </div>
 

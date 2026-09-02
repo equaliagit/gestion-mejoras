@@ -159,7 +159,7 @@ footer{padding:28px 0 56px; color:var(--ink-3); font-size:13px}
         <tr><td>comments</td><td>Comentarios (del hilo y de evaluación)</td></tr>
         <tr><td>attachments</td><td>Archivos adjuntos</td></tr>
         <tr><td>areas</td><td>Áreas o procesos</td></tr>
-        <tr><td>impacts</td><td>Tipos de impacto esperado</td></tr>
+        <tr><td>impacts</td><td>Por dónde mejora cada propuesta</td></tr>
         <tr><td>impact_proposal</td><td>Qué impactos tiene cada propuesta</td></tr>
         <tr><td>proposal_statuses</td><td>Los estados posibles</td></tr>
         <tr><td>committee_sessions</td><td>Sesiones del comité</td></tr>
@@ -350,7 +350,7 @@ footer{padding:28px 0 56px; color:var(--ink-3); font-size:13px}
       <caption>areas · impacts<span>Misma estructura las dos</span></caption>
       <thead><tr><th>Campo</th><th>Tipo</th><th>Para qué</th></tr></thead>
       <tbody>
-        <tr><td>id · name</td><td class="ty">bigint · varchar(80)</td><td>Áreas: Comercial, Operaciones, RRHH, Sistemas, Desarrollo, Calidad, Compras, Logística. Impactos: Calidad, Coste, Plazo, Cliente, Riesgo.</td></tr>
+        <tr><td>id · name</td><td class="ty">bigint · varchar(80)</td><td>Áreas: Comercial, Operaciones, RRHH, Sistemas, Desarrollo, Calidad, Compras, Logística. Impactos: Menos errores, Menos coste, Menos tiempo de espera, Mejor para el cliente, Menos riesgo.</td></tr>
         <tr><td>position</td><td class="ty">int</td><td>Orden en el desplegable.</td></tr>
         <tr><td>is_active</td><td class="ty">booleano</td><td>Desactivar en lugar de borrar: si se borrara un área, las propuestas antiguas se quedarían huérfanas y los informes históricos dejarían de cuadrar.</td></tr>
       </tbody>

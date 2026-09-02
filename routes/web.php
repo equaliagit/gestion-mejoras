@@ -28,6 +28,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/salir', [LoginController::class, 'destroy'])->name('logout');
 
     Route::get('/propuestas', [ProposalController::class, 'index'])->name('proposals.index');
+    Route::get('/propuestas/empresa', [ProposalController::class, 'shared'])->name('proposals.shared');
     Route::get('/propuestas/nueva', [ProposalController::class, 'create'])->name('proposals.create');
     Route::post('/propuestas', [ProposalController::class, 'store'])->name('proposals.store');
 });
