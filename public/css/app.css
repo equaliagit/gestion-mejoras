@@ -192,10 +192,10 @@ input[aria-invalid=true], textarea[aria-invalid=true], select[aria-invalid=true]
   .app{grid-template-columns:1fr}
   .side{
     border-right:0; border-bottom:1px solid var(--line); flex-direction:row;
-    align-items:center; gap:14px; overflow-x:auto; padding:12px;
+    align-items:center; gap:10px 14px; flex-wrap:wrap; padding:12px;
   }
   .side .brand{padding:0}
-  .side .navgroup{flex-direction:row; gap:6px}
+  .side .navgroup{flex-direction:row; gap:6px; flex-wrap:wrap}
   .side .navgroup .eyebrow{display:none}
   .side .nav{white-space:nowrap}
   .side .who{margin:0 0 0 auto; padding:0; border:0}

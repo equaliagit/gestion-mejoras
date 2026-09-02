@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\CommitteeController;
+use App\Http\Controllers\MailPreviewController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProposalActionController;
 use App\Http\Controllers\ProposalController;
@@ -38,6 +39,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/avisos', [NotificationController::class, 'index'])->name('notifications.index');
     Route::post('/avisos/leidos', [NotificationController::class, 'markAllRead'])->name('notifications.read');
+    Route::get('/avisos/{aviso}', [NotificationController::class, 'open'])->name('notifications.open');
     Route::post('/propuestas', [ProposalController::class, 'store'])->name('proposals.store');
 
     // Los informes y la bandeja: cada uno con su permiso. El middleware
@@ -57,6 +59,13 @@ Route::middleware('auth')->group(function () {
     Route::get('/propuestas/{proposal}', [ProposalController::class, 'show'])->name('proposals.show');
 
     Route::post('/propuestas/{proposal}/comentarios', [CommentController::class, 'store'])->name('comments.store');
+
+    // Ver los correos en el navegador. Solo en local: en el servidor esta
+    // ruta no llega ni a existir.
+    if (app()->environment('local')) {
+        Route::get('/dev/correos', [MailPreviewController::class, 'index'])->name('dev.mail.index');
+        Route::get('/dev/correos/{cambio}', [MailPreviewController::class, 'show'])->name('dev.mail.show');
+    }
 
     // Las acciones del flujo. Cada una es un formulario que llega por POST,
     // y cada una comprueba su permiso en el controlador.

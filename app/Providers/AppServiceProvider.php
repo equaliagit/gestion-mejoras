@@ -2,10 +2,8 @@
 
 namespace App\Providers;
 
-use App\Events\ProposalStatusChanged;
 use App\Listeners\SendProposalNotifications;
 use App\Models\Proposal;
-use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\View\View as ViewInstance;
@@ -21,8 +19,10 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->compartirDatosDelMenu();
 
-        // Quien escucha los cambios de estado para avisar a la gente.
-        Event::listen(ProposalStatusChanged::class, SendProposalNotifications::class);
+        // Ojo: NO hay que registrar aquí SendProposalNotifications.
+        // Laravel encuentra solo los oyentes de app/Listeners mirando el tipo
+        // del parámetro de su método handle(). Si además se registran a mano,
+        // se enganchan dos veces y cada aviso sale por duplicado.
     }
 
     /**

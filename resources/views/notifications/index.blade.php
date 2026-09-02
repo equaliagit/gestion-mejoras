@@ -25,7 +25,7 @@
             <span class="u {{ $aviso->read_at ? 'leido' : '' }}"></span>
             <span>
                 @if ($aviso->data['proposal_id'] ?? null)
-                    <a class="tt" href="{{ route('proposals.show', $aviso->data['proposal_id']) }}">
+                    <a class="tt" href="{{ route('notifications.open', $aviso->id) }}">
                         {{ $aviso->data['titular'] }}
                     </a>
                 @else

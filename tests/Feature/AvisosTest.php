@@ -139,6 +139,28 @@ class AvisosTest extends TestCase
             ->assertSee('Hemos recibido tu propuesta');
     }
 
+    public function test_abrir_un_aviso_lo_marca_como_leido_y_lleva_a_la_propuesta(): void
+    {
+        $propuesta = $this->enviar($this->marta, Visibility::Public);
+        $aviso = $this->marta->fresh()->unreadNotifications()->firstOrFail();
+
+        $this->actingAs($this->marta)
+            ->get(route('notifications.open', $aviso->id))
+            ->assertRedirect(route('proposals.show', $propuesta));
+
+        $this->assertSame(0, $this->marta->fresh()->unreadNotifications()->count());
+    }
+
+    public function test_no_se_puede_abrir_el_aviso_de_otra_persona(): void
+    {
+        $this->enviar($this->marta, Visibility::Public);
+        $aviso = $this->luis->fresh()->unreadNotifications()->firstOrFail();
+
+        $this->actingAs($this->carlos)
+            ->get(route('notifications.open', $aviso->id))
+            ->assertNotFound();
+    }
+
     public function test_se_pueden_marcar_todos_como_leidos(): void
     {
         $this->enviar($this->marta, Visibility::Public);
