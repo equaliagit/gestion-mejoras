@@ -6,6 +6,7 @@ use App\Enums\Visibility;
 use App\Models\Area;
 use App\Models\Proposal;
 use App\Models\ProposalStatus as Status;
+use App\Models\Scopes\VisibilityScope;
 use App\Models\StatusChange;
 use App\Models\User;
 use Illuminate\Support\Collection;
@@ -33,7 +34,7 @@ class ProposalReport
     {
         // Sin el filtro de visibilidad: un informe cuenta todo lo que hay,
         // aunque nunca enseñe de quién es cada propuesta.
-        $this->propuestas = Proposal::withoutGlobalScopes()
+        $this->propuestas = Proposal::withoutGlobalScope(VisibilityScope::class)
             ->submitted()
             ->whereYear('submitted_at', $this->year)
             ->with('status')
@@ -188,7 +189,7 @@ class ProposalReport
     /** Los años con propuestas, para el selector de periodo. */
     public static function aniosConDatos(): array
     {
-        $anios = Proposal::withoutGlobalScopes()
+        $anios = Proposal::withoutGlobalScope(VisibilityScope::class)
             ->submitted()
             ->get()
             ->map(fn (Proposal $p) => (int) $p->submitted_at->year)
@@ -208,7 +209,7 @@ class ProposalReport
      */
     public function filasParaExportar(): array
     {
-        return Proposal::withoutGlobalScopes()
+        return Proposal::withoutGlobalScope(VisibilityScope::class)
             ->submitted()
             ->whereYear('submitted_at', $this->year)
             ->with(['area', 'status', 'author', 'reviewer'])

@@ -9,6 +9,7 @@ use App\Models\Comment;
 use App\Models\CommitteeSession;
 use App\Models\Proposal;
 use App\Models\ProposalStatus as Status;
+use App\Models\Scopes\VisibilityScope;
 use App\Models\StatusChange;
 use App\Models\User;
 use App\Support\Workflow;
@@ -290,7 +291,7 @@ class ProposalWorkflow
     {
         $prefix = 'MEJ-'.$date->format('y').'-';
 
-        $last = Proposal::withoutGlobalScopes()
+        $last = Proposal::withoutGlobalScope(VisibilityScope::class)
             ->where('reference', 'like', $prefix.'%')
             ->orderByDesc('reference')
             ->lockForUpdate()

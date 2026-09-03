@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Proposal;
+use App\Models\Scopes\VisibilityScope;
 use App\Models\StatusChange;
 use App\Notifications\ProposalUpdate;
 use Illuminate\Http\Request;
@@ -50,7 +51,7 @@ class MailPreviewController extends Controller
     /** Pinta el correo de un cambio de estado concreto. */
     public function show(Request $request, StatusChange $cambio): Response
     {
-        $propuesta = Proposal::withoutGlobalScopes()->find($cambio->proposal_id);
+        $propuesta = Proposal::withoutGlobalScope(VisibilityScope::class)->find($cambio->proposal_id);
 
         if (! $propuesta || ! $propuesta->author) {
             throw new NotFoundHttpException('Esa propuesta ya no existe.');

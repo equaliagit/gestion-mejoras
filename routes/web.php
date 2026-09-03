@@ -8,6 +8,7 @@ use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProposalActionController;
 use App\Http\Controllers\ProposalController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\SchedulerController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -20,6 +21,15 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::redirect('/', '/propuestas');
+
+/*
+| El latido: la dirección que llama el cron del servidor cada 5 minutos.
+| Fuera de toda autenticación a propósito — la llave secreta es su puerta.
+| Si la llave no coincide, responde «no existe» y no ejecuta nada.
+*/
+Route::get('/latido/{llave}', SchedulerController::class)
+    ->middleware('throttle:20,1')
+    ->name('scheduler.run');
 
 // Solo para quien NO ha entrado todavía.
 Route::middleware('guest')->group(function () {
