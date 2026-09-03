@@ -48,7 +48,7 @@
             </a>
         </nav>
 
-        @if (auth()->user()->canAny(['proposals.review', 'reports.view']))
+        @if (auth()->user()->canAny(['proposals.review', 'reports.view', 'users.manage']))
             <nav class="navgroup" aria-label="Gestión">
                 <p class="eyebrow">Gestión</p>
                 @can('proposals.review')
@@ -59,6 +59,11 @@
                 @can('reports.view')
                     <a class="nav {{ request()->routeIs('reports.*') ? 'is-on' : '' }}" href="{{ route('reports.index') }}">
                         Informes
+                    </a>
+                @endcan
+                @can('users.manage')
+                    <a class="nav {{ request()->routeIs('users.*') ? 'is-on' : '' }}" href="{{ route('users.index') }}">
+                        Personas
                     </a>
                 @endcan
             </nav>

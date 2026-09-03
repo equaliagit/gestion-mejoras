@@ -1,0 +1,275 @@
+<title>Alta del Buzón en Microsoft 365</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Serif:wght@500;600&display=swap">
+<style>
+:root{
+  --paper:#F1F4F1; --surface:#FFFFFF; --surface-2:#F8FAF8; --surface-3:#EDF1EE;
+  --line:#DCE3DE; --line-strong:#C2CCC6;
+  --ink:#131B19; --ink-2:#41504B; --ink-3:#6D7C76;
+  --accent:#0E5F52; --accent-soft:#DCEDE7;
+  --ochre:#9C580F; --ochre-soft:#F7EAD8;
+  --ok:#276F44; --bad:#9E3838;
+  --radius:10px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#0C1211; --surface:#141C1A; --surface-2:#19231F; --surface-3:#1F2B27;
+    --line:#26332E; --line-strong:#3A4A43;
+    --ink:#E7EEEA; --ink-2:#AEBDB7; --ink-3:#7C8C86;
+    --accent:#54C1A7; --accent-soft:#123129;
+    --ochre:#D79B55; --ochre-soft:#31240F;
+    --ok:#63B683; --bad:#E08585;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0C1211; --surface:#141C1A; --surface-2:#19231F; --surface-3:#1F2B27;
+  --line:#26332E; --line-strong:#3A4A43;
+  --ink:#E7EEEA; --ink-2:#AEBDB7; --ink-3:#7C8C86;
+  --accent:#54C1A7; --accent-soft:#123129;
+  --ochre:#D79B55; --ochre-soft:#31240F;
+  --ok:#63B683; --bad:#E08585;
+}
+
+*{box-sizing:border-box}
+body{margin:0; background:var(--paper); color:var(--ink); font-family:"IBM Plex Sans","Segoe UI",system-ui,sans-serif; font-size:16px; line-height:1.62}
+h1,h2,h3{margin:0; text-wrap:balance; line-height:1.22}
+p{margin:0}
+:focus-visible{outline:2px solid var(--accent); outline-offset:2px; border-radius:4px}
+.wrap{max-width:760px; margin:0 auto; padding:0 24px}
+.eyebrow{font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:11px; font-weight:500; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-3)}
+
+header.doc{padding:52px 0 28px; border-bottom:1px solid var(--line)}
+header.doc h1{font-family:"IBM Plex Serif",Georgia,serif; font-weight:600; font-size:clamp(30px,5vw,44px); letter-spacing:-.015em; margin:14px 0 12px}
+header.doc .lede{color:var(--ink-2); font-size:17px}
+.meta{display:flex; flex-wrap:wrap; gap:0 36px; margin-top:22px; padding-top:16px; border-top:1px solid var(--line)}
+.meta div{display:flex; flex-direction:column; padding:4px 0}
+.meta dt{font-family:"IBM Plex Mono",monospace; font-size:10.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-3)}
+.meta dd{margin:0; font-size:14.5px; font-weight:500}
+
+section{padding:40px 0; border-bottom:1px solid var(--line)}
+section:last-of-type{border-bottom:0}
+h2{font-family:"IBM Plex Serif",Georgia,serif; font-weight:600; font-size:clamp(21px,3vw,27px); margin:6px 0 14px}
+.body{display:grid; gap:13px}
+.body p{color:var(--ink-2)}
+.body strong{color:var(--ink)}
+
+.pasos{list-style:none; margin:22px 0 0; padding:0; display:grid; gap:26px; counter-reset:p}
+.pasos > li{display:grid; grid-template-columns:34px 1fr; gap:16px; counter-increment:p}
+.pasos > li::before{
+  content:counter(p); font-family:"IBM Plex Mono",monospace; font-size:14px; font-weight:600;
+  color:var(--accent); background:var(--accent-soft); border-radius:50%;
+  width:32px; height:32px; display:grid; place-items:center; margin-top:1px;
+}
+.pasos h3{font-size:17px; margin-bottom:7px}
+.pasos p{color:var(--ink-2); font-size:15px}
+.pasos p + p{margin-top:8px}
+.ruta{
+  display:inline-block; font-family:"IBM Plex Mono",monospace; font-size:13px;
+  background:var(--surface-3); padding:3px 9px; border-radius:6px; color:var(--ink); margin:6px 0;
+}
+.en{font-size:13px; color:var(--ink-3); font-style:italic}
+
+.nota{border-left:3px solid var(--accent); background:var(--surface-2); border-radius:0 var(--radius) var(--radius) 0; padding:14px 16px; display:grid; gap:8px; margin-top:14px}
+.nota b{color:var(--ink)}
+.nota p{font-size:14.5px; color:var(--ink-2)}
+.nota.aviso{border-left-color:var(--ochre)}
+.nota.stop{border-left-color:var(--bad)}
+
+.si-no{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:18px}
+.caja{border:1px solid var(--line); border-radius:var(--radius); padding:16px; background:var(--surface)}
+.caja h3{font-size:14px; margin-bottom:10px; display:flex; align-items:center; gap:8px}
+.caja.si h3{color:var(--ok)}
+.caja.no h3{color:var(--bad)}
+.caja ul{margin:0; padding-left:18px; display:grid; gap:7px}
+.caja li{font-size:14px; color:var(--ink-2)}
+
+.devolver{border:1px solid var(--line); border-radius:var(--radius); overflow:hidden; margin-top:16px; background:var(--surface)}
+.devolver .fila{display:grid; grid-template-columns:auto 1fr; gap:14px; padding:13px 16px; border-bottom:1px solid var(--line); align-items:baseline}
+.devolver .fila:last-child{border-bottom:0}
+.devolver .k{font-family:"IBM Plex Mono",monospace; font-size:12px; color:var(--accent); white-space:nowrap}
+.devolver .v{font-size:14.5px; color:var(--ink-2)}
+.devolver .v b{color:var(--ink)}
+
+dl.faq{margin:18px 0 0; display:grid; gap:18px}
+dl.faq dt{font-weight:600; font-size:15.5px; margin-bottom:5px}
+dl.faq dd{margin:0; color:var(--ink-2); font-size:15px}
+
+footer{padding:26px 0 52px; color:var(--ink-3); font-size:13px}
+@media (max-width:620px){
+  .wrap{padding:0 16px}
+  section{padding:30px 0}
+  .si-no{grid-template-columns:1fr}
+}
+@media print{
+  body{background:#fff}
+  section{break-inside:avoid}
+}
+</style>
+
+<header class="doc">
+  <div class="wrap">
+    <p class="eyebrow">Buzón de Mejora · Instrucciones</p>
+    <h1>Alta del Buzón en Microsoft 365</h1>
+    <p class="lede">Para que la gente entre en la aplicación con su cuenta de la empresa, en vez de con una contraseña más que recordar. Son seis pasos en el portal de Microsoft y hacen falta permisos de administrador, por eso no puedo hacerlo yo.</p>
+    <div class="meta">
+      <div><dt>Quién</dt><dd>Administrador de Microsoft 365</dd></div>
+      <div><dt>Dónde</dt><dd>entra.microsoft.com</dd></div>
+      <div><dt>Cuánto</dt><dd>Unos 10 minutos</dd></div>
+      <div><dt>Cada cuánto</dt><dd>Una vez, y renovar en 2 años</dd></div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+<section class="wrap">
+  <h2>Lo que se pide, y lo que no</h2>
+  <div class="body">
+    <p>Antes de los pasos, conviene tener claro el alcance, porque la pantalla que aparece al final usa un lenguaje que alarma más de lo que debe.</p>
+  </div>
+
+  <div class="si-no">
+    <div class="caja si">
+      <h3>✓ La aplicación podrá</h3>
+      <ul>
+        <li>Saber el nombre y el correo de quien entra</li>
+        <li>Comprobar que esa persona es de la empresa</li>
+      </ul>
+    </div>
+    <div class="caja no">
+      <h3>✗ La aplicación no podrá</h3>
+      <ul>
+        <li>Leer ni enviar correo de nadie</li>
+        <li>Ver archivos, OneDrive ni SharePoint</li>
+        <li>Ver ni tocar calendarios</li>
+        <li>Entrar a nada de Microsoft 365</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="nota">
+    <p><b>Y no acepta cuentas de fuera.</b> El registro se hace «de un solo inquilino», que significa que solo pueden entrar cuentas de la organización. Alguien con un Hotmail o con el correo de otra empresa no pasa de la primera pantalla, aunque conozca la dirección de la aplicación.</p>
+  </div>
+</section>
+
+<section class="wrap">
+  <h2>Los seis pasos</h2>
+
+  <ol class="pasos">
+    <li>
+      <div>
+        <h3>Crear el registro</h3>
+        <p>Entrar en <b>entra.microsoft.com</b> y seguir esta ruta:</p>
+        <p><span class="ruta">Identidad → Aplicaciones → Registros de aplicaciones</span></p>
+        <p class="en">En inglés: Identity → Applications → App registrations</p>
+        <p>Pulsar <b>Nuevo registro</b>.</p>
+      </div>
+    </li>
+
+    <li>
+      <div>
+        <h3>Rellenar los tres campos</h3>
+        <p><b>Nombre:</b> <span class="ruta">Buzón de Mejora</span> — es lo que verá la plantilla al entrar, así que conviene escribirlo bien.</p>
+        <p><b>Tipos de cuenta admitidos:</b> la primera opción, <b>«Solo cuentas de este directorio organizativo»</b>. Es la que impide que entre gente de fuera.</p>
+        <p><b>URI de redirección:</b> elegir <b>Web</b> en el desplegable y pegar la dirección que le haya pasado el responsable del proyecto. Tiene que coincidir carácter por carácter, incluida la parte de <span class="ruta">https://</span> y sin barra al final.</p>
+        <p>Pulsar <b>Registrar</b>.</p>
+      </div>
+    </li>
+
+    <li>
+      <div>
+        <h3>Copiar los dos identificadores</h3>
+        <p>En la pantalla que aparece, arriba, hay dos valores largos con guiones:</p>
+        <p><b>Id. de aplicación (cliente)</b> y <b>Id. de directorio (inquilino)</b>.</p>
+        <p>Copiar los dos. No son secretos —identifican la aplicación, no dan acceso a nada—, así que se pueden mandar por correo con tranquilidad.</p>
+      </div>
+    </li>
+
+    <li>
+      <div>
+        <h3>Crear el secreto</h3>
+        <p><span class="ruta">Certificados y secretos → Secretos de cliente → Nuevo secreto de cliente</span></p>
+        <p><b>Descripción:</b> algo que se entienda dentro de dos años, por ejemplo <span class="ruta">Buzón de Mejora — producción</span>.</p>
+        <p><b>Expira:</b> elegir <b>24 meses</b>, el máximo que ofrece Microsoft.</p>
+      </div>
+    </li>
+
+    <li>
+      <div>
+        <h3>Copiar el secreto, ya</h3>
+        <p>Aparecerá una tabla con dos columnas: <b>Valor</b> e <b>Id. de secreto</b>.</p>
+        <p>El que hace falta es el de la columna <b>Valor</b>, no el «Id.». Confundirlos es el error más habitual y el mensaje de fallo que produce no lo dice.</p>
+        <div class="nota stop">
+          <p><b>Ese valor solo se ve una vez.</b> En cuanto se cambie de pantalla o se recargue, queda oculto para siempre y hay que crear otro. Copiarlo antes de tocar nada más.</p>
+        </div>
+      </div>
+    </li>
+
+    <li>
+      <div>
+        <h3>Dar el consentimiento de la organización</h3>
+        <p><span class="ruta">Permisos de API</span></p>
+        <p>Debe haber una sola línea: <b>Microsoft Graph → User.Read</b>. No hay que añadir ninguna más.</p>
+        <p>Pulsar <b>«Conceder consentimiento de administrador para [nombre de la empresa]»</b> y confirmar.</p>
+        <p><b>Este es el paso que solo puede dar un administrador</b>, y el motivo de estas instrucciones. Sin él, cada persona vería una pantalla de permisos la primera vez que entrase; con él, no la ve nadie.</p>
+      </div>
+    </li>
+  </ol>
+</section>
+
+<section class="wrap">
+  <h2>Qué hay que devolver</h2>
+  <div class="body">
+    <p>Tres datos. Los dos primeros por el medio que se quiera; el tercero, con un poco más de cuidado.</p>
+  </div>
+
+  <div class="devolver">
+    <div class="fila">
+      <span class="k">1</span>
+      <span class="v"><b>Id. de aplicación (cliente)</b> — no es secreto, se puede mandar por correo.</span>
+    </div>
+    <div class="fila">
+      <span class="k">2</span>
+      <span class="v"><b>Id. de directorio (inquilino)</b> — tampoco es secreto.</span>
+    </div>
+    <div class="fila">
+      <span class="k">3</span>
+      <span class="v"><b>El «Valor» del secreto</b> — este sí lo es. Equivale a una contraseña de la aplicación: quien lo tenga puede suplantarla. Mejor entregarlo en mano, por Teams en un chat privado, o por el gestor de contraseñas de la empresa. No por correo, y desde luego no en un correo con varios destinatarios.</span>
+    </div>
+  </div>
+
+  <div class="nota aviso">
+    <p><b>Y una fecha para el calendario.</b> El secreto caduca a los 24 meses. El día que caduque, nadie podrá entrar en la aplicación y no habrá ninguna pista de por qué, porque no se habrá tocado nada. Conviene poner un aviso en el calendario de la empresa <b>un mes antes</b> de esa fecha, con el texto «renovar el secreto del Buzón de Mejora». Renovarlo son dos minutos: repetir los pasos 4 y 5 y pasar el valor nuevo.</p>
+  </div>
+</section>
+
+<section class="wrap">
+  <h2>Preguntas que van a salir</h2>
+
+  <dl class="faq">
+    <dt>Sale un aviso: «Microsoft no ha publicado esta aplicación». ¿Es seguro?</dt>
+    <dd>Sí. Ese aviso significa únicamente que la aplicación no tiene «editor verificado», un trámite pensado para software comercial que se vende a terceros. Esta es una aplicación propia, hecha para la empresa y alojada en su propio servidor: no hay editor externo que verificar. Todas las aplicaciones internas aparecen así. Subir el logo de la empresa en <b>Personalización de marca</b> hace que la pantalla resulte reconocible.</dd>
+
+    <dt>¿Qué pasa cuando alguien deja la empresa?</dt>
+    <dd>Deja de poder entrar automáticamente, en cuanto se le desactiva la cuenta de Microsoft. No hay que acordarse de darle de baja en la aplicación: sus propuestas se conservan, pero la puerta se cierra sola. Esa es una de las ventajas de hacerlo así y no con contraseñas propias.</dd>
+
+    <dt>¿Puede entrar cualquiera que tenga correo de la empresa?</dt>
+    <dd>Sí, y es intencionado: la aplicación es para que cualquiera pueda proponer mejoras. Quien entra por primera vez se da de alta solo, con permisos de empleado —proponer y seguir sus propuestas—. Los permisos de comité y de administración se asignan aparte, uno por uno; no los hereda nadie por tener correo corporativo.</dd>
+
+    <dt>¿Puede la aplicación leer el correo o los archivos de alguien?</dt>
+    <dd>No. El único permiso que pide es <b>User.Read</b>, que da acceso al nombre y al correo de quien está entrando, y a nada más. Se puede comprobar en cualquier momento en la pantalla de <b>Permisos de API</b>: si algún día apareciera algo distinto de esa única línea, sería para preguntar.</dd>
+
+    <dt>¿Y si preferimos que solo entren algunas personas?</dt>
+    <dd>Se puede. En <b>Aplicaciones empresariales → Buzón de Mejora → Propiedades</b> se activa <b>«¿Requiere asignación de usuarios?»</b> y a partir de ahí solo entra quien esté en la lista. Es una decisión de la empresa; la recomendación es no activarlo, porque el sentido de la herramienta es que cualquiera pueda aportar una idea.</dd>
+
+    <dt>¿Se puede deshacer?</dt>
+    <dd>Sí, en cualquier momento y sin consecuencias. Borrar el registro de aplicaciones desactiva la entrada con Microsoft. La aplicación seguiría funcionando con su propio sistema de contraseñas, que se mantiene disponible precisamente por eso.</dd>
+  </dl>
+</section>
+
+</main>
+
+<footer class="wrap">
+  <p>Buzón de Mejora · instrucciones de alta en Microsoft 365. Ante cualquier duda durante el proceso, mejor parar y preguntar que seguir adelante: nada de esto tiene prisa.</p>
+</footer>

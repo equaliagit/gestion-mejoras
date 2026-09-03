@@ -10,6 +10,7 @@ use App\Http\Controllers\ProposalActionController;
 use App\Http\Controllers\ProposalController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SchedulerController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -62,6 +63,15 @@ Route::middleware('auth')->group(function () {
     Route::middleware('can:reports.view')->group(function () {
         Route::get('/informes', [ReportController::class, 'index'])->name('reports.index');
         Route::get('/informes/descargar', [ReportController::class, 'export'])->name('reports.export');
+    });
+
+    // Personas: quién entra y con qué rol.
+    Route::middleware('can:users.manage')->group(function () {
+        Route::get('/personas', [UserController::class, 'index'])->name('users.index');
+        Route::get('/personas/nueva', [UserController::class, 'create'])->name('users.create');
+        Route::post('/personas', [UserController::class, 'store'])->name('users.store');
+        Route::get('/personas/{user}/editar', [UserController::class, 'edit'])->name('users.edit');
+        Route::put('/personas/{user}', [UserController::class, 'update'])->name('users.update');
     });
 
     // La bandeja del comité. El middleware corta el paso a quien no tenga

@@ -339,3 +339,7 @@ details.accion .cuerpo textarea{min-height:70px}
 .btn-microsoft:hover{border-color:var(--ink-3)}
 .separador{display:flex; align-items:center; gap:12px; color:var(--ink-3); font-size:12px}
 .separador::before, .separador::after{content:""; flex:1; height:1px; background:var(--line)}
+
+/* Nota al pie de una pantalla de gestión */
+.nota-pie{margin-top:22px; max-width:70ch; font-size:13.5px; color:var(--ink-3); line-height:1.6}
+.nota-pie strong{color:var(--ink-2)}
