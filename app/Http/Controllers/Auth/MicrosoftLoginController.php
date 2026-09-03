@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Models\Area;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -36,7 +35,13 @@ class MicrosoftLoginController extends Controller
                 ->withErrors(['email' => 'La entrada con Microsoft todavía no está configurada.']);
         }
 
-        return Socialite::driver('azure')->redirect();
+        // Solo lo que necesitamos: saber quién eres. Sin `offline_access`,
+        // que la librería añade por defecto y sirve para renovar la sesión
+        // por detrás — nosotros no lo usamos, y en la pantalla de permisos
+        // aparece como «mantener el acceso a los datos», que asusta con razón.
+        return Socialite::driver('azure')
+            ->setScopes(['openid', 'profile', 'email', 'User.Read'])
+            ->redirect();
     }
 
     /** Aquí vuelve Microsoft con la respuesta. */
@@ -96,12 +101,15 @@ class MicrosoftLoginController extends Controller
             return $usuario;
         }
 
+        // Sin área: Microsoft no sabe en cuál trabaja cada uno, y poner una
+        // por defecto sería peor que dejarla vacía — el formulario la traería
+        // preseleccionada y la gente enviaría propuestas mal clasificadas sin
+        // enterarse, con lo que los informes por área dejarían de valer.
         $nuevo = User::create([
             'name' => $nombre !== '' ? $nombre : $correo,
             'email' => $correo,
             'microsoft_id' => $microsoftId,
             'is_active' => true,
-            'area_id' => Area::active()->value('id'),
         ]);
 
         $nuevo->assignRole('Empleado');

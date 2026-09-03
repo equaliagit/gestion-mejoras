@@ -50,6 +50,20 @@ class EntrarConMicrosoftTest extends TestCase
         $this->assertSame('ms-0001', $usuario->microsoft_id);
         $this->assertNull($usuario->password);
         $this->assertNotNull($usuario->last_login_at);
+
+        // Sin área: adivinarla sería peor que dejarla vacía, porque el
+        // formulario la traería preseleccionada y nadie lo notaría.
+        $this->assertNull($usuario->area_id);
+    }
+
+    public function test_el_formulario_no_preselecciona_area_a_quien_no_la_tiene(): void
+    {
+        $this->fingirCuenta('nuevo@equalia.es', 'Persona Nueva', 'ms-0009');
+        $this->get('/entrar/microsoft/callback');
+
+        $this->get('/propuestas/nueva')
+            ->assertOk()
+            ->assertSee('Elige un área…', escape: false);
     }
 
     public function test_quien_ya_tenia_cuenta_conserva_su_rol_y_no_se_duplica(): void
