@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\MicrosoftLoginController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\CommitteeController;
 use App\Http\Controllers\MailPreviewController;
@@ -37,6 +38,10 @@ Route::middleware('guest')->group(function () {
     Route::post('/entrar', [LoginController::class, 'store'])
         ->middleware('throttle:10,1')
         ->name('login.store');
+
+    // Entrada con la cuenta de Microsoft de la empresa.
+    Route::get('/entrar/microsoft', [MicrosoftLoginController::class, 'redirect'])->name('login.microsoft');
+    Route::get('/entrar/microsoft/callback', [MicrosoftLoginController::class, 'callback'])->name('login.microsoft.callback');
 });
 
 // De aquí para abajo hace falta haber entrado.

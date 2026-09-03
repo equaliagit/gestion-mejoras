@@ -2,11 +2,13 @@
 
 namespace App\Providers;
 
-use App\Listeners\SendProposalNotifications;
 use App\Models\Proposal;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\View\View as ViewInstance;
+use SocialiteProviders\Azure\Provider as AzureProvider;
+use SocialiteProviders\Manager\SocialiteWasCalled;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -19,7 +21,12 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->compartirDatosDelMenu();
 
-        // Ojo: NO hay que registrar aquí SendProposalNotifications.
+        // Socialite no trae Microsoft de serie: se le añade aquí.
+        Event::listen(function (SocialiteWasCalled $event) {
+            $event->extendSocialite('azure', AzureProvider::class);
+        });
+
+        // Ojo: NO hay que registrar aquí el oyente de los avisos.
         // Laravel encuentra solo los oyentes de app/Listeners mirando el tipo
         // del parámetro de su método handle(). Si además se registran a mano,
         // se enganchan dos veces y cada aviso sale por duplicado.

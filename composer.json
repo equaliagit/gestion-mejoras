@@ -8,7 +8,9 @@
     "require": {
         "php": "^8.3",
         "laravel/framework": "^13.17",
+        "laravel/socialite": "^5.31",
         "laravel/tinker": "^3.0",
+        "socialiteproviders/microsoft-azure": "^5.2",
         "spatie/laravel-activitylog": "^4.12",
         "spatie/laravel-permission": "^8.3"
     },

@@ -26,6 +26,20 @@
             <p class="flash flash-bad" style="margin:0">{{ $errors->first() }}</p>
         @endif
 
+        @if (filled(config('services.azure.client_id')) && filled(config('services.azure.redirect')))
+            <a class="btn btn-microsoft" href="{{ route('login.microsoft') }}">
+                <svg width="17" height="17" viewBox="0 0 23 23" aria-hidden="true">
+                    <rect x="1" y="1" width="10" height="10" fill="#F25022"/>
+                    <rect x="12" y="1" width="10" height="10" fill="#7FBA00"/>
+                    <rect x="1" y="12" width="10" height="10" fill="#00A4EF"/>
+                    <rect x="12" y="12" width="10" height="10" fill="#FFB900"/>
+                </svg>
+                Entrar con Microsoft
+            </a>
+
+            <p class="separador"><span>o con tu contraseña</span></p>
+        @endif
+
         <form method="POST" action="{{ route('login.store') }}" class="stack" style="gap:16px">
             @csrf
 

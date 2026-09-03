@@ -35,4 +35,22 @@ return [
         ],
     ],
 
+    /*
+    | Entrada con la cuenta de Microsoft 365 de la empresa.
+    |
+    | Los tres primeros valores salen del registro de la aplicación en Entra ID
+    | y viven en el .env. Si no están puestos, el botón de «Entrar con
+    | Microsoft» ni siquiera aparece y la aplicación funciona con contraseña,
+    | así que un despliegue a medias no deja a nadie fuera.
+    |
+    | `tenant` fija de qué organización se aceptan cuentas: con el id de la
+    | empresa, nadie de fuera puede entrar aunque conozca la dirección.
+    */
+    'azure' => [
+        'client_id' => env('AZURE_CLIENT_ID'),
+        'client_secret' => env('AZURE_CLIENT_SECRET'),
+        'redirect' => env('AZURE_REDIRECT_URI'),
+        'tenant' => env('AZURE_TENANT_ID'),
+    ],
+
 ];

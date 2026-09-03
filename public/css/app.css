@@ -333,3 +333,9 @@ details.accion .cuerpo textarea{min-height:70px}
 .spark{width:132px; flex:none}
 .block-b .hint{font-size:12px; color:var(--ink-3); line-height:1.45}
 @media (max-width:900px){ .chartgrid{grid-template-columns:1fr} }
+
+/* ------------------------------------------------------ Entrar con Microsoft */
+.btn-microsoft{justify-content:center; background:var(--surface); color:var(--ink); font-weight:600}
+.btn-microsoft:hover{border-color:var(--ink-3)}
+.separador{display:flex; align-items:center; gap:12px; color:var(--ink-3); font-size:12px}
+.separador::before, .separador::after{content:""; flex:1; height:1px; background:var(--line)}
