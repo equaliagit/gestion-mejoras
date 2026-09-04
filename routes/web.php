@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\MicrosoftLoginController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\CommitteeController;
 use App\Http\Controllers\MailPreviewController;
+use App\Http\Controllers\MaintenanceController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProposalActionController;
 use App\Http\Controllers\ProposalController;
@@ -32,6 +33,15 @@ Route::redirect('/', '/propuestas');
 Route::get('/latido/{llave}', SchedulerController::class)
     ->middleware('throttle:20,1')
     ->name('scheduler.run');
+
+/*
+| Las tareas de despliegue, para un servidor sin consola. Normalmente apagadas
+| (MAINTENANCE_ENABLED=false): con el interruptor bajado responde «no existe»
+| aunque se acierte la llave.
+*/
+Route::get('/mantenimiento/{llave}/{tarea}', MaintenanceController::class)
+    ->middleware('throttle:10,1')
+    ->name('maintenance.run');
 
 // Solo para quien NO ha entrado todavía.
 Route::middleware('guest')->group(function () {

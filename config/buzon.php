@@ -21,4 +21,18 @@ return [
     */
     'scheduler_key' => env('SCHEDULER_KEY', ''),
 
+    /*
+    | Las tareas de despliegue desde el navegador, para un servidor sin consola.
+    |
+    | Llave propia, distinta de la del cron: la del cron se le entrega al
+    | proveedor del alojamiento, y no queremos que esa misma llave sirva para
+    | tocar la base de datos.
+    |
+    | El interruptor viene apagado. Se enciende el rato que dura una
+    | actualización y se apaga al terminar; con él apagado, la dirección
+    | responde «no existe» aunque se acierte la llave.
+    */
+    'maintenance_key' => env('MAINTENANCE_KEY', ''),
+    'maintenance_enabled' => (bool) env('MAINTENANCE_ENABLED', false),
+
 ];
