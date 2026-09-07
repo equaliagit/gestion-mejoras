@@ -25,11 +25,30 @@ class PrepareDeployment extends Command
 
     protected $description = 'Prepara el ZIP con todo lo que hay que subir al servidor';
 
-    /** Lo que NO viaja al servidor. */
+    /** Lo que no viaja al servidor, ni la carpeta ni el contenido. */
     private const EXCLUIDO = [
-        '.git', '.github', 'node_modules', 'tests', 'storage/logs', 'storage/framework/cache/data',
-        'storage/framework/sessions', 'storage/framework/views', '.env', '.phpunit.result.cache',
-        'docs', '.vscode', '.idea',
+        '.git', '.github', 'node_modules', 'tests', 'docs',
+        '.env', '.phpunit.result.cache', '.vscode', '.idea',
+    ];
+
+    /**
+     * Carpetas que sí viajan, pero vacías.
+     *
+     * Aquí Laravel escribe en tiempo de ejecución: registros, plantillas
+     * compiladas, sesiones. Su contenido no pinta nada en el servidor, pero
+     * LAS CARPETAS TIENEN QUE EXISTIR o la aplicación no arranca —falla con
+     * un «Please provide a valid cache path» que no dice qué falta—.
+     *
+     * De cada una se conserva solo su `.gitignore`, que es lo que hace que
+     * la carpeta exista de verdad dentro del ZIP.
+     */
+    private const VACIAS = [
+        'storage/logs',
+        'storage/framework/cache/data',
+        'storage/framework/sessions',
+        'storage/framework/views',
+        'storage/framework/testing',
+        'bootstrap/cache',
     ];
 
     public function handle(): int
@@ -102,22 +121,40 @@ class PrepareDeployment extends Command
             $ruta = str_replace('\\', '/', $archivo->getPathname());
             $relativa = ltrim(Str::after($ruta, $raiz), '/');
 
-            if ($this->excluido($relativa)) {
+            if ($this->excluido($relativa, $archivo->isDir())) {
                 continue;
             }
 
             $archivo->isDir()
                 ? $zip->addEmptyDir($relativa)
                 : $zip->addFile($ruta, $relativa);
+
+            // Windows no guarda permisos de Unix en el ZIP, así que al
+            // extraerlo en el servidor cada archivo recibe los que el sistema
+            // decida — y a veces salen tan cerrados que Apache no puede ni
+            // leerlos (403 Forbidden). Aquí se escriben a mano: 755 para las
+            // carpetas, que hay que poder atravesar, y 644 para los archivos.
+            $zip->setExternalAttributesName(
+                $relativa.($archivo->isDir() ? '/' : ''),
+                ZipArchive::OPSYS_UNIX,
+                ($archivo->isDir() ? 0755 : 0644) << 16,
+            );
         }
 
         $zip->close();
     }
 
-    private function excluido(string $relativa): bool
+    private function excluido(string $relativa, bool $esCarpeta): bool
     {
         foreach (self::EXCLUIDO as $patron) {
             if ($relativa === $patron || str_starts_with($relativa, $patron.'/')) {
+                return true;
+            }
+        }
+
+        // De las carpetas de trabajo viaja la carpeta y su .gitignore, nada más.
+        foreach (self::VACIAS as $patron) {
+            if (str_starts_with($relativa, $patron.'/') && ! $esCarpeta && basename($relativa) !== '.gitignore') {
                 return true;
             }
         }
