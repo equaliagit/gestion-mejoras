@@ -192,10 +192,15 @@ class PrepareDeployment extends Command
         DB_USERNAME=RELLENAR
         DB_PASSWORD=RELLENAR
 
-        SESSION_DRIVER=database
+        # Las sesiones y la caché van en archivos, no en la base de datos, para
+        # que la aplicación arranque aunque las tablas no existan todavía: si
+        # no, la dirección que sirve para crearlas fallaría por falta de tablas.
+        # La cola sí va en la base de datos: los avisos pendientes tienen que
+        # sobrevivir a un reinicio.
+        SESSION_DRIVER=file
         SESSION_LIFETIME=480
         QUEUE_CONNECTION=database
-        CACHE_STORE=database
+        CACHE_STORE=file
 
         # Correo saliente. Pídele los datos al proveedor o usa el SMTP de Microsoft 365.
         MAIL_MAILER=smtp
